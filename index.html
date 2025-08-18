@@ -58,6 +58,26 @@
     }
     .kpi-pill{ background:#eaf7ee; color:#144; border-radius:999px; padding:.25rem .6rem; font-weight:600; }
     .chart-wrap{ background:#fbfff7; border:1px dashed rgba(31,170,89,.25); border-radius:14px; padding:1rem; }
+
+    /* Branded outline button with proper hover contrast */
+  .btn-outline-brand{
+    border-color: var(--brand-green);
+    color: var(--brand-green);
+  }
+
+.btn-outline-brand:hover,
+.btn-outline-brand:focus{
+  background-color: var(--brand-green);
+  border-color: var(--brand-green);
+  color: #fff;               /* stays readable on green background */
+}
+
+.btn-outline-brand:active{
+  background-color: #188e4b; /* optional: slightly darker press state */
+  border-color: #188e4b;
+  color: #fff;
+}
+
   </style>
 </head>
 <body>
@@ -81,7 +101,7 @@
               <button class="btn btn-sm m-1 btn-goal" data-goal="1000000" data-name="Warrior">Warrior (₹10L)</button>
               <button class="btn btn-sm m-1 btn-goal" data-goal="2500000" data-name="Sharpshooter">Sharpshooter (₹25L)</button>
               <button class="btn btn-sm m-1 btn-goal" data-goal="5000000" data-name="Maestro">Maestro (₹50L)</button>
-              <button class="btn btn-sm m-1 btn-goal" data-goal="10000000" data-name="Ambassador">Ambassador (₹1 Cr)</button>
+              
             </div>
             
           </div>
@@ -117,7 +137,7 @@
                   <div class="form-check form-switch mb-2">
                     <input class="form-check-input" type="checkbox" id="stepUpToggle">
                     <label class="form-check-label" for="stepUpToggle">Yearly SIP step‑up
-                      <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Increase your SIP by a fixed amount every 12 months.">?</span>
+                      <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Want your wealth to grow faster? Give your SIP a raise – step up and reach your goals sooner.">?</span>
                     </label>
                   </div>
                   <div id="stepUpRow" class="row g-2 mb-3 d-none">
@@ -132,7 +152,7 @@
                   <div class="form-check form-switch mb-2">
                     <input class="form-check-input" type="checkbox" id="topUpToggle">
                     <label class="form-check-label" for="topUpToggle">Annual corpus top‑up
-                      <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Add a lump sum to your corpus once every year.">?</span>
+                      <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Want your wealth to grow faster? Give your SIP a raise – add an annual top-up and reach your goals sooner.">?</span>
                     </label>
                   </div>
                   <div id="topUpRow" class="row g-2 mb-3 d-none">
@@ -164,6 +184,19 @@
             </div>
           </div>
 
+          <!-- Blog CTA Buttons -->
+          <div class="text-center my-4">
+            <div class="d-inline-flex justify-content-center gap-2 flex-wrap">
+            <!-- TODO: replace href values with your blog URLs -->
+            <a class="btn btn-outline-brand" href="https://ithought.co.in/a-case-for-passive-investing/" target="_blank" rel="noopener">Power of Compounding: Explained</a>
+
+            <a class="btn btn-outline-brand" href="https://milestones2wealth.com/milestones/" target="_blank" rel="noopener">Link Your SIP to Goals</a>
+            
+            <a class="btn btn-outline-brand" href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf" target="_blank" rel="noopener">Detailed Calculation Method</a>
+            </div>
+          </div>
+
+
           <!-- FAQ Accordion -->
           <div class="mt-5">
             <h5 class="mb-3">FAQs</h5>
@@ -175,7 +208,11 @@
                   </button>
                 </h2>
                 <div id="faq1" class="accordion-collapse collapse show" aria-labelledby="faq1h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">A Systematic Investment Plan (SIP) is a disciplined way to invest a fixed amount at regular intervals (usually monthly) into mutual funds or other instruments.</div>
+                  <div class="accordion-body">
+                    <div class="ratio ratio-16x9">
+                      <iframe src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -204,11 +241,15 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="faq4h">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
-                    How is growth calculated each month?
+                    What is the Milestone Journey?
                   </button>
                 </h2>
-                <div id="faq4" class="accordion-collapse collapse" aria-labelledby="faq4h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">We convert your annual return into a monthly rate (annual ÷ 12) and compound monthly. Each month: <em>new total = previous total × (1 + monthly rate) + current SIP</em>.</div>
+                <div id="faq4" class="accordion-collapse collapse show" aria-labelledby="faq4h" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    <div class="ratio ratio-16x9">
+                      <iframe width="560" height="315" src="https://www.youtube.com/embed/sNwP4K-OuaY?si=3krheLGoHaVh9p2J" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -270,14 +311,13 @@
     }
 
     // --- UI state ---
-    const goals = [200000, 500000, 1000000, 2500000, 5000000, 10000000];
+    const goals = [200000, 500000, 1000000, 2500000, 5000000];
     const goalMeta = {
       200000: 'Go Getter',
       500000: 'Achiever',
       1000000: 'Warrior',
       2500000: 'Sharpshooter',
       5000000: 'Maestro',
-      10000000: 'Ambassador'
     };
     let selectedGoal = null;
 
