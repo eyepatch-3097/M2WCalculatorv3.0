@@ -101,7 +101,7 @@
               <button class="btn btn-sm m-1 btn-goal" data-goal="1000000" data-name="Warrior">Warrior (₹10L)</button>
               <button class="btn btn-sm m-1 btn-goal" data-goal="2500000" data-name="Sharpshooter">Sharpshooter (₹25L)</button>
               <button class="btn btn-sm m-1 btn-goal" data-goal="5000000" data-name="Maestro">Maestro (₹50L)</button>
-              
+              <button class="btn btn-sm m-1 btn-goal" data-goal="10000000" data-name="Ambassador">Ambassador (₹1Cr)</button>
             </div>
             
           </div>
@@ -134,35 +134,25 @@
                     <div><span class="kpi-pill"><span id="returnValue">12</span>% expected</span></div>
                   </div>
 
-                  <div class="form-check form-switch mb-2">
-                    <input class="form-check-input" type="checkbox" id="stepUpToggle">
-                    <label class="form-check-label" for="stepUpToggle">Yearly SIP step‑up
-                      <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Want your wealth to grow faster? Give your SIP a raise – step up and reach your goals sooner.">?</span>
-                    </label>
-                  </div>
-                  <div id="stepUpRow" class="row g-2 mb-3 d-none">
-                    <div class="col-12">
-                      <label class="form-label" for="stepUpAmt">Step‑up amount (₹)
-                        <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much should your monthly SIP increase every 12 months?">?</span>
-                      </label>
-                      <input type="number" class="form-control" id="stepUpAmt" placeholder="e.g., 1000" min="0" value="1000">
-                    </div>
-                  </div>
+                  <div class="mb-3">
+  <label class="form-label" for="stepUpAmt">
+    Yearly SIP Step-Up (₹)
+    <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="How much should your monthly SIP increase every 12 months?">?</span>
+  </label>
+  <input type="number" class="form-control" id="stepUpAmt" placeholder="e.g., 1000" min="0" value="1000">
+  <div class="form-text">Leave blank or 0 if you don’t want a step-up.</div>
+</div>
 
-                  <div class="form-check form-switch mb-2">
-                    <input class="form-check-input" type="checkbox" id="topUpToggle">
-                    <label class="form-check-label" for="topUpToggle">Annual corpus top‑up
-                      <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Want your wealth to grow faster? Give your SIP a raise – add an annual top-up and reach your goals sooner.">?</span>
-                    </label>
-                  </div>
-                  <div id="topUpRow" class="row g-2 mb-3 d-none">
-                    <div class="col-12">
-                      <label class="form-label" for="topUpAmt">Annual top‑up (₹)
-                        <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much extra will you add to your corpus every 12 months?">?</span>
-                      </label>
-                      <input type="number" class="form-control" id="topUpAmt" placeholder="e.g., 20000" min="0" value="20000">
-                    </div>
-                  </div>
+                  <div class="mb-3">
+  <label class="form-label" for="topUpAmt">
+    Annual Corpus Top-Up (₹)
+    <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="How much extra will you add to your corpus every 12 months (month 12, 24, ...)?">?</span>
+  </label>
+  <input type="number" class="form-control" id="topUpAmt" placeholder="e.g., 20000" min="0" value="20000">
+  <div class="form-text">Leave blank or 0 if you don’t want a top-up.</div>
+</div>
 
                   <button type="button" id="calcBtn" class="btn btn-success w-100" style="background:var(--brand-green); border-color:var(--brand-green)" data-bs-toggle="tooltip" data-bs-placement="top" title="Calculate time to each milestone based on your inputs">Calculate</button>
                 </form>
@@ -300,21 +290,17 @@
     }
 
     // --- UI state ---
-    const goals = [200000, 500000, 1000000, 2500000, 5000000];
+    const goals = [200000, 500000, 1000000, 2500000, 5000000, 10000000];
     const goalMeta = {
       200000: 'Go Getter',
       500000: 'Achiever',
       1000000: 'Warrior',
       2500000: 'Sharpshooter',
       5000000: 'Maestro',
+      10000000: 'Ambassador' 
     };
     let selectedGoal = null;
 
-    // Toggle rows
-    const stepUpToggle = document.getElementById('stepUpToggle');
-    const topUpToggle  = document.getElementById('topUpToggle');
-    stepUpToggle.addEventListener('change', () => document.getElementById('stepUpRow').classList.toggle('d-none', !stepUpToggle.checked));
-    topUpToggle .addEventListener('change', () => document.getElementById('topUpRow').classList.toggle('d-none', !topUpToggle.checked));
 
     // Goal buttons
     document.querySelectorAll('.btn-goal').forEach(btn => {
@@ -366,8 +352,10 @@
       const initial = Number(document.getElementById('initialCorpus').value)||0;
       const sip     = Number(document.getElementById('monthlySIP').value)||0;
       const rate    = Number(document.getElementById('expectedReturn').value)||0;
-      const stepAmt = stepUpToggle.checked ? Number(document.getElementById('stepUpAmt').value)||0 : 0;
-      const topAmt  = topUpToggle.checked  ? Number(document.getElementById('topUpAmt').value)||0  : 0;
+      // NEW: always read values; blank/0 => no effect
+      const stepAmt = Number(document.getElementById('stepUpAmt').value) || 0;
+      const topAmt  = Number(document.getElementById('topUpAmt').value)  || 0;
+
 
       // Validate minimal inputs
       if (rate <= 0 || (initial <= 0 && sip <= 0)){
