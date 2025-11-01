@@ -29,14 +29,14 @@
       border-radius:18px;
     }
     /* NEW: a wrapper that controls overall width */
-.app-wrap{
-  width: min(85vw, 1200px);   /* 70% of viewport, capped at 1000px */
-  margin: 0 auto;
-}
+    .app-wrap{
+      width: min(95vw, 1400px);  
+      margin: 0 auto;
+    }
 
 /* nicer mobile width */
 @media (max-width: 992px){
-  .app-wrap{ width: min(92vw, 1000px); }
+  .app-wrap{ width: min(98vw, 1400px); }
 }
 
     .brand-badge{
@@ -93,6 +93,11 @@
   max-width: 220px;
   height: auto;
 }
+
+/* Optional: subtle dashed accent like chart box */
+#nudgeCard{
+  border: 1px dashed rgba(245,200,66,.6);
+}
   </style>
 </head>
 <body>
@@ -128,7 +133,7 @@
 
           <div class="row g-4 align-items-stretch">
             <!-- Inputs -->
-            <div class="col-12 col-lg-5">
+            <div class="col-12 col-lg-5" id="inputsCol">
               <div class="h-100 border rounded-4 p-3 p-md-4">
                 <h5 class="mb-3">Tell Us Your Plan</h5>
                 <form id="calcForm" novalidate>
@@ -176,7 +181,7 @@
             </div>
 
             <!-- Results -->
-            <div class="col-12 col-lg-7">
+            <div class="col-12 col-lg-7" id="resultsCol">
               <div class="h-100 border rounded-4 p-3 p-md-4 d-flex flex-column">
                 <h5 class="mb-3">Results</h5>
                 <div id="highlightGoal" class="small text-muted mb-2">No goal selected yet.</div>
@@ -188,7 +193,21 @@
                 <div class="mt-2 text-center small text-muted">X‑axis: Milestone Goals • amount • Y‑axis: Months needed (lower is faster)</div>
               </div>
             </div>
-          </div>
+
+                      <!-- Advisory (fades in after Calculate if a goal is selected) -->
+            <div class="col-12 col-lg-2" id="nudgeCol">
+              <div id="nudgeCard" class="h-100 border rounded-4 p-3 p-md-4 fade d-none" style="background:#fff9e6; border-color:#f5c84280;">
+               <h6 class="mb-2">Pro Tip</h6>
+                <p class="small mb-3 mb-lg-auto">
+                You can reach your goal faster by increasing your <b>SIP Step-Up</b> and <b>Annual Corpus Top-Up</b>.
+                </p>
+                <button type="button" id="nudgeFocus" class="btn btn-sm btn-outline-brand mt-2">
+                Edit Step-Up & Top-Up
+              </button>
+              </div>
+            </div>
+
+          
 
           <!-- Blog CTA Buttons -->
           <div class="text-center my-4">
@@ -201,6 +220,8 @@
             <a class="btn btn-outline-brand" href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf" target="_blank" rel="noopener">Detailed Calculation Method</a>
             </div>
           </div>
+
+
 
 
           <!-- FAQ Accordion -->
@@ -327,6 +348,7 @@
         selectedGoal = parseInt(btn.dataset.goal,10);
         const name = btn.dataset.name || goalMeta[selectedGoal] || '';
         document.getElementById('highlightGoal').innerHTML = `Selected goal: <span class="accent fw-bold">${name} (₹${selectedGoal.toLocaleString('en-IN')})</span>`;
+        setThreeColLayout();
         if (lastResults) {
           // If we already calculated, refresh the single-goal summary with cached inputs
           showSingleGoalSummary(lastResults, selectedGoal);
@@ -365,6 +387,78 @@
     let chart;
     let lastResults = null; // cache last computation
 
+    function showNudge() {
+      const nudgeCol  = document.getElementById('nudgeCol');
+      const nudgeCard = document.getElementById('nudgeCard');
+      if (!nudgeCol || !nudgeCard) return;
+
+      nudgeCol.classList.remove('d-none');       // reveal the column
+      nudgeCard.classList.remove('d-none');      // reveal the card
+      requestAnimationFrame(() => nudgeCard.classList.add('show')); // fade in
+    }
+
+    function hideNudge() {
+      const nudgeCol  = document.getElementById('nudgeCol');
+      const nudgeCard = document.getElementById('nudgeCard');
+      if (!nudgeCol || !nudgeCard) return;
+
+      nudgeCard.classList.remove('show');        // start fade out
+      setTimeout(() => {
+        nudgeCard.classList.add('d-none');       // fully hide card
+        nudgeCol.classList.add('d-none');        // hide column
+      }, 200); // default .fade transition ~.2s
+    }
+
+    function setTwoColLayout() {
+      const inputs  = document.getElementById('inputsCol');
+      const results = document.getElementById('resultsCol');
+      if (!inputs || !results) return;
+
+      inputs.classList.remove('col-lg-4'); inputs.classList.add('col-lg-5');
+      results.classList.remove('col-lg-6'); results.classList.add('col-lg-7');
+      hideNudge();
+    }
+
+    function setThreeColLayout() {
+      const inputs  = document.getElementById('inputsCol');
+      const results = document.getElementById('resultsCol');
+      if (!inputs || !results) return;
+
+      inputs.classList.remove('col-lg-5'); inputs.classList.add('col-lg-4');
+      results.classList.remove('col-lg-7'); results.classList.add('col-lg-6');
+      showNudge();
+    }
+
+    document.getElementById('nudgeFocus')?.addEventListener('click', () => {
+      const step = document.getElementById('stepUpAmt');
+      step?.scrollIntoView({ behavior:'smooth', block:'center' });
+      setTimeout(() => step?.focus(), 350);
+    });
+
+    function toggleNudge(show){
+      const nudge = document.getElementById('nudgeCard');
+      if (!nudge) return;
+      if (show){
+        nudge.classList.remove('d-none');
+        // allow a paint, then fade in
+        requestAnimationFrame(() => nudge.classList.add('show'));
+      } else {
+        nudge.classList.remove('show');
+        // wait for fade-out to finish, then fully hide
+        setTimeout(() => nudge.classList.add('d-none'), 200);
+      }
+    }
+
+    setTwoColLayout();
+
+    document.getElementById('nudgeFocus')?.addEventListener('click', () => {
+      const step = document.getElementById('stepUpAmt');
+      const top  = document.getElementById('topUpAmt');
+      step?.scrollIntoView({ behavior:'smooth', block:'center' });
+      setTimeout(()=> step?.focus(), 400);
+    });
+
+
     function computeAndDraw(){
       const initial = Number(document.getElementById('initialCorpus').value)||0;
       const sip     = Number(document.getElementById('monthlySIP').value)||0;
@@ -387,6 +481,12 @@
         showSingleGoalSummary(lastResults, selectedGoal);
       } else {
         document.getElementById('resultLine').textContent = 'Select a goal above to see the exact time.';
+      }
+      toggleNudge(!!selectedGoal);
+      if (selectedGoal) {
+        setThreeColLayout();
+      } else {
+        setTwoColLayout();
       }
     }
 
