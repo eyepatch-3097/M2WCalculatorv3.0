@@ -69,6 +69,7 @@
     .calc-header{
       background: linear-gradient(90deg, var(--brand-green), var(--brand-yellow));
       -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800;
+      font-size: 3rem;
     }
     .kpi-pill{ background:#eaf7ee; color:#144; border-radius:999px; padding:.25rem .6rem; font-weight:600; }
     .chart-wrap{ background:#fbfff7; border:1px dashed rgba(31,170,89,.25); border-radius:14px; padding:1rem; }
@@ -93,13 +94,34 @@
 }
 
 .app-card img {
-  max-width: 220px;
+  max-width: 300px;
   height: auto;
 }
 
 /* Optional: subtle dashed accent like chart box */
 #nudgeCard{
   border: 1px dashed rgba(245,200,66,.6);
+}
+
+.lead-subtitle {
+  font-size: 1.5rem;     /* tweak → 1.25rem for bigger, 1.35rem for more hero-like */
+  font-weight: 500;
+  color: #455;            /* slightly darker than text-muted for better readability */
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 300;
+  border-color:#13452d;
+  border-style: solid;
+  border-radius: 20px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-width: 1px;
+  background-color: rgb(252, 207, 214);
+  color:#EF7060;
 }
   </style>
 </head>
@@ -112,17 +134,17 @@
           <div class="text-center mb-4">
             <div class="text-center mb-3">
               <a href="https://milestones2wealth.com" target="_self">
-              <img src="https://milestones2wealth.com/wp-content/uploads/2025/10/cropped-Artboard-1-copy-7-1-scaled-1-768x257.png" alt="Milestones2Wealth Logo" style="max-width:200px; height:auto;"></a>
+              <img src="https://milestones2wealth.com/wp-content/uploads/2025/10/cropped-Artboard-1-copy-7-1-scaled-1-768x257.png" alt="Milestones2Wealth Logo" style="max-width:500px; height:auto;"></a>
             </div>
             <span class="brand-badge">Goal Oriented • Simple • Personalized</span>
-            <h1 class="display-6 mt-2 calc-header">Investment Goal Calculator</h1>
-            <p class="text-muted mb-0">Find how long it takes to reach your wealth milestones.</p>
+            <h1 class="mt-2 calc-header">INVESTMENT GOAL CALCULATOR</h1>
+            <p class="lead-subtitle mb-0">Track the fastest route to your next milestone.</p>
           </div>
 
           <!-- Goal pills -->
           <div class="text-center mb-4">
 
-            <div class="small text-muted mt-2">Select your financial wealth goal below. The chart shows <span class="accent fw-bold">time it takes to reach your goal</span>.</div>
+            <div class="small mt-2 fw-bold subtitle">Select your financial wealth goal below. The chart shows <span class="fw-bold">time it takes to reach your goal</span>.</div>
             <div class="btn-group flex-wrap" role="group" aria-label="Goal amount">
               <button class="btn btn-sm m-1 btn-goal" data-goal="200000" data-name="Go Getter">Go Getter (₹2L)</button>
               <button class="btn btn-sm m-1 btn-goal" data-goal="500000" data-name="Achiever">Achiever (₹5L)</button>
