@@ -1,727 +1,1293 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Investment Goal Calculator</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <style>
-    :root{
-      --brand-green:#1faa59;   /* primary */
-      --brand-yellow:#f5c842;  /* accent */
-      --brand-deep:#0b2c20;    /* background tint */
-    }
-    body{
-      background: linear-gradient(180deg,#0d1f16, #0f281c 30%, #0d1f16);
-      color:#122;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center; /* ← add this */
-    }
-    .app-card{
-      background:#ffffff;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow: 0 10px 30px rgba(0,0,0,.08);
-      border-radius:18px;
-    }
-    /* NEW: a wrapper that controls overall width */
-    .app-wrap{
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 0; 
-    }
-
-/* nicer mobile width */
-@media (max-width: 992px){
-  .app-wrap{ width: min(98vw, 1400px); }
-}
-
-    .brand-badge{
-      display:inline-block;
-      background: var(--brand-green);
-      color:#fff;
-      padding:.35rem .6rem;
-      border-radius:999px;
-      font-weight:600;
-      letter-spacing:.3px;
-      font-size:.85rem;
-    }
-    .btn-goal{
-      border:1px solid rgba(0,0,0,.08);
-      background:#f8fff3;
-      color:#13452d;
-    }
-    .btn-goal.active{
-      background: var(--brand-yellow);
-      color:#1f1f1f;
-      border-color: var(--brand-yellow);
-      font-weight:700;
-    }
-    .form-label .help{ color: var(--brand-green); cursor: help; font-weight:700; }
-    .help[role="button"]{ display:inline-flex; align-items:center; justify-content:center; width:1.25rem; height:1.25rem; border-radius:50%; background:#eaf7ee; border:1px solid #bfe6cd; font-size:.8rem; margin-left:.25rem; }
-    .accent{ color: var(--brand-green); }
-    .calc-header{
-      background: linear-gradient(90deg, var(--brand-green), var(--brand-yellow));
-      -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800;
-      font-size: 3rem;
-    }
-    .kpi-pill{ background:#eaf7ee; color:#144; border-radius:999px; padding:.25rem .6rem; font-weight:600; }
-    .chart-wrap{ background:#fbfff7; border:1px dashed rgba(31,170,89,.25); border-radius:14px; padding:1rem; min-height: 500px;}
-
-    /* Branded outline button with proper hover contrast */
-  .btn-outline-brand{
-    border-color: var(--brand-green);
-    color: var(--brand-green);
-  }
-
-.btn-outline-brand:hover,
-.btn-outline-brand:focus{
-  background-color: var(--brand-green);
-  border-color: var(--brand-green);
-  color: #fff;               /* stays readable on green background */
-}
-
-.btn-outline-brand:active{
-  background-color: #188e4b; /* optional: slightly darker press state */
-  border-color: #188e4b;
-  color: #fff;
-}
-
-.app-card img {
-  max-width: 300px;
-  height: auto;
-}
-
-/* Optional: subtle dashed accent like chart box */
-#nudgeCard{
-  border: 1px dashed rgba(245,200,66,.6);
-}
-
-.lead-subtitle {
-  font-size: 1.5rem;     /* tweak → 1.25rem for bigger, 1.35rem for more hero-like */
-  font-weight: 500;
-  color: #455;            /* slightly darker than text-muted for better readability */
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  font-weight: 300;
-  border-color:#13452d;
-  border-style: solid;
-  border-radius: 20px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 3px;
-  padding-right: 3px;
-  border-width: 1px;
-  background-color: rgb(252, 207, 214);
-  color:#EF7060;
-  margin-bottom: 10px;
-}
-
-/* GOAL BUTTONS */
-.goal-btn {
-  border: 1px solid rgba(0,0,0,.08);
-  background: #f8fff3;
-  color: #13452d;
-  border-radius: 14px;
-  padding: 12px 16px;
-  width: 200px;
-  height: 200px;
-  font-size: .85rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s ease;
-}
-
-.goal-btn img {
-  width: 120px;      /* tweak icon size here */
-  height: auto;
-  margin-bottom: 6px;
-}
-
-.goal-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
-}
-
-.goal-btn.active {
-  background: var(--brand-yellow);
-  border-color: var(--brand-yellow);
-  color: #1f1f1f;
-  transform: translateY(-3px);
-}
-
-.goal-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-}
-
-
-  </style>
-</head>
-<body>
-  <main class="container py-4">
-    <div class="row justify-content-center">
-      <div class="col-12">
-        <div class="app-wrap">
-        <div class="app-card p-4 p-md-5">
-          <div class="text-center mb-4">
-            <div class="text-center mb-3">
-              <a href="https://milestones2wealth.com" target="_self">
-              <img src="https://milestones2wealth.com/wp-content/uploads/2025/10/cropped-Artboard-1-copy-7-1-scaled-1-768x257.png" alt="Milestones2Wealth Logo" style="max-width:500px; height:auto;"></a>
-            </div>
-            <span class="brand-badge">Goal Oriented • Simple • Personalized</span>
-            <h1 class="mt-2 calc-header">INVESTMENT GOAL CALCULATOR</h1>
-            <p class="lead-subtitle mb-0">Track the fastest route to your next milestone.</p>
-          </div>
-
-          <!-- Goal pills -->
-          <div class="text-center mb-4">
-
-            <div class="small mt-2 fw-bold subtitle">Select your financial wealth goal below. The chart shows <span class="fw-bold">time it takes to reach your goal</span>.</div>
-            <div class="goal-grid">
-
-  <button class="goal-btn" data-goal="200000" data-name="Self-Starter">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-2-1.png">
-    Self-Starter (₹2L)
-  </button>
-
-  <button class="goal-btn" data-goal="200000" data-name="Go-Getter">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/2L.png">
-    Go-Getter (₹2L)
-  </button>
-
-  <button class="goal-btn" data-goal="500000" data-name="Achiever">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-3.png">
-    Achiever (₹5L)
-  </button>
-
-  <button class="goal-btn" data-goal="1000000" data-name="Warrior">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-4.png">
-    Warrior (₹10L)
-  </button>
-
-  <button class="goal-btn" data-goal="2500000" data-name="Sharpshooter">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/25L.png">
-    Sharpshooter (₹25L)
-  </button>
-
-  <button class="goal-btn" data-goal="5000000" data-name="Maestro">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-6.png">
-    Maestro (₹50L)
-  </button>
-
-  <button class="goal-btn" data-goal="10000000" data-name="Ambassador">
-    <img src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-7.png">
-    Ambassador (₹1Cr)
-  </button>
-
-</div>
-
-            
-          </div>
-
-          <div id="calcSection" class="row g-4 align-items-stretch d-none">
-
-  <!-- Pro Tip banner (hidden until after first Calculate) -->
-  <div id="proTipBanner" class="col-12 d-none">
-    <div class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center mb-0">
-      <div class="small mb-2 mb-md-0">
-        <strong>Pro Tip:</strong> You can reach your goal faster by increasing your
-        <b>SIP Step-Up</b> and <b>Annual Corpus Top-Up</b>.
-      </div>
-      <button type="button" id="nudgeFocus" class="btn btn-sm btn-outline-brand ms-md-3">
-        Edit Step-Up & Top-Up
-      </button>
-    </div>
-  </div>
-
-  <!-- Inputs -->
-  <div class="col-12 col-lg-5" id="inputsCol">
-    <div class="h-100 border rounded-4 p-3 p-md-4">
-      <h5 class="mb-3">Tell Us Your Plan</h5>
-      <form id="calcForm" novalidate>
-        <div class="mb-3">
-          <label class="form-label" for="initialCorpus">Initial corpus (₹)
-            <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The lump sum you already have invested.">?</span>
-          </label>
-          <input type="number" class="form-control" id="initialCorpus" placeholder="e.g., 50000" value="50000" min="0" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="monthlySIP">Monthly SIP (₹)
-            <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Your monthly investment added at the end of each month.">?</span>
-          </label>
-          <input type="number" class="form-control" id="monthlySIP" placeholder="e.g., 10000" value="10000" min="0" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="expectedReturn">Expected annual return (%)
-            <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Net annualised rate assumed for growth. This is just an estimate.">?</span>
-          </label>
-          <input type="range" class="form-range" id="expectedReturn" min="8" max="16" step="0.5" value="12" />
-          <div><span class="kpi-pill"><span id="returnValue">12</span>% expected</span></div>
-        </div>
-
-        <!-- ADVANCED INPUTS: hidden until user clicks Edit Step-Up & Top-Up -->
-        <div class="mb-3 advanced-input d-none">
-          <label class="form-label" for="stepUpAmt">Yearly SIP Step-Up (₹)
-            <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much should your monthly SIP increase every 12 months?">?</span>
-          </label>
-          <input type="number" class="form-control" id="stepUpAmt" placeholder="e.g., 1000" min="0" value="0">
-          
-        </div>
-
-        <div class="mb-3 advanced-input d-none">
-          <label class="form-label" for="topUpAmt">
-            Annual Corpus Top-Up (₹)
-            <span class="help" role="button" data-bs-toggle="tooltip" data-bs-placement="top"
-              title="How much extra will you add to your corpus every 12 months (month 12, 24, ...)?">?</span>
-          </label>
-          <input type="number" class="form-control" id="topUpAmt" placeholder="e.g., 20000" min="0" value="0">
-          
-        </div>
-
-        <button type="button" id="calcBtn" class="btn btn-success w-100"
-          style="background:var(--brand-green); border-color:var(--brand-green)"
-          data-bs-toggle="tooltip" data-bs-placement="top"
-          title="Calculate time to each milestone based on your inputs">
-          Calculate
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Results (hidden until first Calculate) -->
-  <div class="col-12 col-lg-7 d-none" id="resultsCol">
-    <div class="h-100 border rounded-4 p-3 p-md-4 d-flex flex-column">
-      <h5 class="mb-3">Results</h5>
-      <div id="highlightGoal" class="small text-muted mb-2">No goal selected yet.</div>
-      <div id="resultLine" class="mb-3 fw-semibold"></div>
-
-      <div class="chart-wrap flex-grow-1 d-flex align-items-center">
-        <canvas id="goalChart" height="180"></canvas>
-      </div>
-      <div class="mt-2 text-center small text-muted">
-        X-axis: Milestone Goals • amount • Y-axis: Months needed (lower is faster)
-      </div>
-    </div>
-  </div>
-</div>
-
-
-          
-
-          <!-- Blog CTA Buttons -->
-          <div class="text-center my-4">
-            <div class="d-inline-flex justify-content-center gap-2 flex-wrap">
-            <!-- TODO: replace href values with your blog URLs -->
-            <a class="btn btn-outline-brand" href="https://ithought.co.in/a-case-for-passive-investing/" target="_blank" rel="noopener">Power of Compounding: Explained</a>
-
-            <a class="btn btn-outline-brand" href="https://milestones2wealth.com/milestones/" target="_blank" rel="noopener">Link Your SIP to Goals</a>
-            
-            <a class="btn btn-outline-brand" href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf" target="_blank" rel="noopener">Detailed Calculation Method</a>
-            </div>
-          </div>
-
-
-
-
-          <!-- FAQ Accordion -->
-          <div class="mt-5">
-            <h5 class="mb-3">FAQs</h5>
-            <div class="accordion" id="faqAccordion">
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="faq1h">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
-                    What is a SIP?
-                  </button>
-                </h2>
-                <div id="faq1" class="accordion-collapse collapse show" aria-labelledby="faq1h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">
-                    <div class="ratio ratio-16x9">
-                      <iframe src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="faq2h">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
-                    How does the yearly SIP step‑up work here?
-                  </button>
-                </h2>
-                <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">If enabled, your monthly SIP increases by a fixed ₹ amount every 12 months. Example: starting at ₹10,000 with a ₹1,000 step‑up becomes ₹11,000 after 12 months, ₹12,000 after 24 months, and so on.</div>
-                </div>
-              </div>
-
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="faq3h">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
-                    When is the annual top‑up applied?
-                  </button>
-                </h2>
-                <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">The model adds your annual top‑up at the start of each new year (months 12, 24, 36, ...), before monthly growth and SIP are applied.</div>
-                </div>
-              </div>
-
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="faq4h">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
-                    What is the Milestone Journey?
-                  </button>
-                </h2>
-                <div id="faq4" class="accordion-collapse collapse show" aria-labelledby="faq4h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">
-                    <div class="ratio ratio-16x9">
-                      <iframe width="560" height="315" src="https://www.youtube.com/embed/sNwP4K-OuaY?si=3krheLGoHaVh9p2J" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="faq5h">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false" aria-controls="faq5">
-                    Does this include taxes, fees, or inflation?
-                  </button>
-                </h2>
-                <div id="faq5" class="accordion-collapse collapse" aria-labelledby="faq5h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">No. This is a planning tool. It does not include taxes, fund expenses, or inflation. Consider adding a buffer to your returns or goals to account for these.</div>
-                </div>
-              </div>
-
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="faq6h">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="false" aria-controls="faq6">
-                    What if a goal shows as not reachable?
-                  </button>
-                </h2>
-                <div id="faq6" class="accordion-collapse collapse" aria-labelledby="faq6h" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body">Try increasing your SIP, enabling step‑ups, adding a yearly top‑up, or assuming a higher (but realistic) return. You can also extend your time horizon.</div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Load Bootstrap JS BEFORE any script that uses `bootstrap.*` -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-  // --- Safety checks (helpful in debugging) ---
-  (function sanity(){
-    if (typeof Chart === 'undefined') console.error('Chart.js not loaded');
-    if (typeof bootstrap === 'undefined') console.error('Bootstrap JS not loaded');
-  })();
-
-  // --- Bootstrap tooltips ---
-  const tooltipEls = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  if (typeof bootstrap !== 'undefined' && tooltipEls.length){
-    tooltipEls.map(el => new bootstrap.Tooltip(el));
-  }
-
-  // --- UI state ---
-  const goals = [200000, 500000, 1000000, 2500000, 5000000, 10000000];
-  const goalMeta = {
-    200000: 'Go Getter',
-    500000: 'Achiever',
-    1000000: 'Warrior',
-    2500000: 'Sharpshooter',
-    5000000: 'Maestro',
-    10000000: 'Ambassador' 
-  };
-
-  // --- Goal Icons for chart points ---
-  const goalIconUrls = {
-    200000: "https://milestones2wealth.com/wp-content/uploads/2025/07/2L.png",          // Go-Getter 2L
-    500000: "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-3.png",     // Achiever 5L
-    1000000: "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-4.png",    // Warrior 10L
-    2500000: "https://milestones2wealth.com/wp-content/uploads/2025/07/25L.png",        // Sharpshooter 25L
-    5000000: "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-6.png",    // Maestro 50L
-    10000000:"https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-7.png"     // Ambassador 1Cr
-  };
-
-  const goalIconImages = {};
-  Object.entries(goalIconUrls).forEach(([goal, url]) => {
-    const img = new Image();
-    img.src = url;
-    img.width = 32;
-    img.height = 32;
-    goalIconImages[goal] = img;
-  });
-
-
-  let selectedGoal = null;
-  let chart;
-  let lastResults = null;   // cache last computation
-  let advancedMode = false; // becomes true when user clicks "Edit Step-Up & Top-Up"
-
-  function formatIndianAmount(num) {
-    if (num >= 10000000) {          // ≥ 1 Cr
-      return '₹' + (num / 10000000) + ' Crore';
-    } else if (num >= 100000) {     // ≥ 1 Lakh
-      return '₹' + (num / 100000) + ' Lakh' + (num >= 200000 ? 's' : '');
-    }
-    return '₹' + num.toLocaleString('en-IN');
-  }
-
-  // --- Goal buttons ---
-  document.querySelectorAll('.goal-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      // visual active state
-      document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // set selected goal
-      selectedGoal = parseInt(btn.dataset.goal, 10);
-      const name = btn.dataset.name || goalMeta[selectedGoal] || '';
-
-      // update highlight text (even if results are hidden, ready for later)
-      document.getElementById('highlightGoal').innerHTML =
-        `Selected goal: <span class="accent fw-bold">${name} (₹${selectedGoal.toLocaleString('en-IN')})</span>`;
-
-      // show calculator section (inputs) if hidden
-      const calcSection = document.getElementById('calcSection');
-      if (calcSection.classList.contains('d-none')) {
-        calcSection.classList.remove('d-none');
-        calcSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Investment Goal Calculator</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+      #zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA {
+        margin-top: 40px; /* adds space above Zoho form */
+        width: 90vw !important;
+      }
+      .zf-wrapper {
+        width: 100% !important;
+        display: flex;
+        justify-content: center;
+        margin: 0 auto;
+      }
+      #zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA iframe {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        background: #fff;
       }
 
-      // Always compute with current/default inputs, but WITHOUT Pro Tip
-      computeAndDraw(false);
-
-      // if we already have results from a previous calculation, update summary
-      if (lastResults) {
-        showSingleGoalSummary(lastResults, selectedGoal);
+      :root {
+        --brand-green: #1faa59; /* primary */
+        --brand-yellow: #f5c842; /* accent */
+        --brand-deep: #0b2c20; /* background tint */
       }
-    });
-  });
-
-  // --- Core calculator ---
-  function monthsToReachGoal(initial, sip, annualRatePct, goal, stepUpAmt = 0, topUpAmt = 0){
-    // Simulate monthly compounding; SIP is added end of each month.
-    // Yearly SIP step-up: +stepUpAmt every 12 months.
-    // Annual top-up: +topUpAmt at the start of each new year (month 12, 24, ...).
-    const r = (annualRatePct/100) / 12; // monthly rate
-    let total = Math.max(0, Number(initial)||0);
-    let monthlySIP = Math.max(0, Number(sip)||0);
-    const step = Math.max(0, Number(stepUpAmt)||0);
-    const top  = Math.max(0, Number(topUpAmt)||0);
-
-    const MAX_MONTHS = 12000; // hard stop to avoid infinite loops
-    let m = 0;
-    while (total < goal && m < MAX_MONTHS){
-      if (top > 0 && m > 0 && m % 12 === 0){
-        total += top; // yearly top-up at month 12,24,36,...
+      body {
+        background: linear-gradient(180deg, #0d1f16, #0f281c 30%, #0d1f16);
+        color: #122;
+        min-height: 100vh;
+        
+        align-items: center;
+        justify-content: center; /* ← add this */
       }
-      if (step > 0 && m > 0 && m % 12 === 0){
-        monthlySIP += step; // every 12 months increase SIP
+      .app-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border-radius: 18px;
       }
-      // growth + SIP contribution at month end
-      total = total * (1 + r) + monthlySIP;
-      m++;
-    }
-    return (m >= MAX_MONTHS) ? Infinity : m; // months
-  }
+      /* NEW: a wrapper that controls overall width */
+      .app-wrap {
+        max-width: 100vw;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0;
+      }
 
-  function computeAndDraw(showProTip=true){
-    const initial = Number(document.getElementById('initialCorpus').value) || 0;
-    const sip     = Number(document.getElementById('monthlySIP').value)   || 0;
-    const rate    = Number(document.getElementById('expectedReturn').value) || 0;
-
-    // Step-Up & Top-Up are only applied after user chooses to edit them
-    const stepAmt = advancedMode
-      ? (Number(document.getElementById('stepUpAmt').value) || 0)
-      : 0;
-
-    const topAmt  = advancedMode
-      ? (Number(document.getElementById('topUpAmt').value) || 0)
-      : 0;
-
-    // Validate minimal inputs
-    if (rate <= 0 || (initial <= 0 && sip <= 0)){
-      document.getElementById('resultLine').innerHTML =
-        '<span class="text-danger">Enter a positive return and at least one positive amount (initial or SIP).</span>';
-      return;
-    }
-
-    const monthsArr = goals.map(g =>
-      monthsToReachGoal(initial, sip, rate, g, stepAmt, topAmt)
-    );
-
-    lastResults = { initial, sip, rate, stepAmt, topAmt, monthsArr };
-    drawLineChart(monthsArr);
-
-    if (selectedGoal){
-      showSingleGoalSummary(lastResults, selectedGoal);
-    } else {
-      document.getElementById('resultLine').textContent =
-        'Select a goal above to see the exact time.';
-    }
-
-    // Always show Results once we’ve computed
-    document.getElementById('resultsCol').classList.remove('d-none');
-
-    // Only show the Pro Tip banner when explicitly requested (Calculate clicked)
-    if (showProTip) {
-      document.getElementById('proTipBanner').classList.remove('d-none');
-    }
-  }
-
-  function showSingleGoalSummary(cache, goal){
-    const idx = goals.indexOf(goal);
-    if (idx === -1) return;
-    const m = cache.monthsArr[idx];
-    const name = goalMeta[goal] || '';
-    if (m === Infinity){
-      document.getElementById('resultLine').innerHTML =
-        `Reaching <b>${name} (₹${goal.toLocaleString('en-IN')})</b> isn\'t feasible with current inputs. Try increasing SIP/returns or adding top-ups.`;
-      return;
-    }
-    const years = Math.floor(m / 12);
-    const rem   = m % 12;
-    document.getElementById('resultLine').innerHTML =
-      `You\'ll reach <b>${name} (₹${goal.toLocaleString('en-IN')})</b> in <span class=\"accent\">${years} year(s) ${rem} month(s)</span>.`;
-  }
-
-  // --- Chart.js (line) ---
-  const goalLabels = goals.map(g => formatIndianAmount(g));
-
-
-  function drawLineChart(monthsArr){
-    const ctx = document.getElementById('goalChart').getContext('2d');
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: goalLabels,
-        datasets: [{
-          label: 'Months to reach each goal',
-          data: monthsArr.map(v => (v === Infinity ? null : v)),
-          tension: .3,
-          borderColor: getComputedStyle(document.documentElement)
-                        .getPropertyValue('--brand-green').trim() || '#1faa59',
-          backgroundColor: 'rgba(31,170,89,.15)',
-          pointRadius: 5,
-          pointHoverRadius: 8,
-          spanGaps: true,
-          clip: 20,
-          pointBackgroundColor: 'transparent',
-          pointBorderWidth: 0,
-          pointStyle: (ctx) => {
-            const idx = ctx.dataIndex;
-            const goalValue = goals[idx];              // 200000, 500000, ...
-            return goalIconImages[goalValue] || 'circle';
-          }
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'nearest', intersect: false },
-        layout: {
-          padding: {
-            left: 24,   // space so first icon doesn’t touch the border
-            right: 24,  // same for last icon
-            top: 10,
-            bottom: 0
-          }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) =>
-                ctx.parsed.y == null ? 'Not reachable' : `${ctx.parsed.y} month(s)`
-            }
-          },
-          title: {
-            display: true,
-            text: 'Time to Reach Each Milestone',
-            color: '#143',
-            padding: { top: 6, bottom: 6 }
-          }
-        },
-        scales: {
-          x: { title: { display: true, text: 'Milestone Goals (₹ Amount)', color: '#143' } },
-          y: {
-            title: { display: true, text: 'Months Needed (lower is faster)', color: '#143' },
-            beginAtZero: true,
-            ticks: { stepSize: 6 }
-          }
+      /* nicer mobile width */
+      @media (max-width: 992px) {
+        .app-wrap {
+          width: min(98vw, 1400px);
         }
       }
-    });
-  }
 
-  // --- Lightweight test cases (run once) ---
-  (function runTests(){
-    const t = (name, cond) =>
-      console[cond ? 'log' : 'error'](
-        `%cTEST ${cond ? 'PASS' : 'FAIL'}: ${name}`,
-        `font-weight:bold;color:${cond ? '#1faa59' : '#b00020'}`
+      .brand-badge {
+        display: inline-block;
+        background: var(--brand-green);
+        color: #fff;
+        padding: 0.35rem 0.6rem;
+        border-radius: 999px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        font-size: 0.85rem;
+      }
+      .btn-goal {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #f8fff3;
+        color: #13452d;
+      }
+      .btn-goal.active {
+        background: var(--brand-yellow);
+        color: #1f1f1f;
+        border-color: var(--brand-yellow);
+        font-weight: 700;
+      }
+      .form-label .help {
+        color: var(--brand-green);
+        cursor: help;
+        font-weight: 700;
+      }
+      .help[role="button"] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 50%;
+        background: #eaf7ee;
+        border: 1px solid #bfe6cd;
+        font-size: 0.8rem;
+        margin-left: 0.25rem;
+      }
+      .accent {
+        color: var(--brand-green);
+      }
+      .calc-header {
+        background: linear-gradient(
+          90deg,
+          var(--brand-green),
+          var(--brand-yellow)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+        font-size: 3rem;
+      }
+      .kpi-pill {
+        background: #eaf7ee;
+        color: #144;
+        border-radius: 999px;
+        padding: 0.25rem 0.6rem;
+        font-weight: 600;
+      }
+      .chart-wrap {
+        background: #fbfff7;
+        border: 1px dashed rgba(31, 170, 89, 0.25);
+        border-radius: 14px;
+        padding: 1rem;
+        min-height: 500px;
+      }
+
+      /* Branded outline button with proper hover contrast */
+      .btn-outline-brand {
+        border-color: var(--brand-green);
+        color: var(--brand-green);
+      }
+
+      .btn-outline-brand:hover,
+      .btn-outline-brand:focus {
+        background-color: var(--brand-green);
+        border-color: var(--brand-green);
+        color: #fff; /* stays readable on green background */
+      }
+
+      .btn-outline-brand:active {
+        background-color: #188e4b; /* optional: slightly darker press state */
+        border-color: #188e4b;
+        color: #fff;
+      }
+
+      .app-card img {
+        max-width: 300px;
+        height: auto;
+      }
+
+      /* Optional: subtle dashed accent like chart box */
+      #nudgeCard {
+        border: 1px dashed rgba(245, 200, 66, 0.6);
+      }
+
+      .lead-subtitle {
+        font-size: 1.5rem; /* tweak → 1.25rem for bigger, 1.35rem for more hero-like */
+        font-weight: 500;
+        color: #455; /* slightly darker than text-muted for better readability */
+      }
+
+      .subtitle {
+        font-size: 1.25rem;
+        font-weight: 300;
+        border-color: #13452d;
+        border-style: solid;
+        border-radius: 20px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 3px;
+        padding-right: 3px;
+        border-width: 1px;
+        background-color: rgb(252, 207, 214);
+        color: #ef7060;
+        margin-bottom: 10px;
+      }
+
+      /* GOAL BUTTONS */
+      .goal-btn {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #f8fff3;
+        color: #13452d;
+        border-radius: 14px;
+        padding: 12px 16px;
+        width: 200px;
+        height: 200px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .goal-btn img {
+        width: 120px; /* tweak icon size here */
+        height: auto;
+        margin-bottom: 6px;
+      }
+
+      .goal-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      .goal-btn.active {
+        background: var(--brand-yellow);
+        border-color: var(--brand-yellow);
+        color: #1f1f1f;
+        transform: translateY(-3px);
+      }
+
+      .goal-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .protip-card {
+        background: #fbfff7;
+        border: 1px dashed rgba(31, 170, 89, 0.3);
+        border-radius: 14px;
+      }
+
+      .protip-card h5 {
+        color: #143;
+      }
+
+      .protip-card ul {
+        padding-left: 1.2rem;
+      }
+
+      .protip-card li + li {
+        margin-top: 0.25rem;
+      }
+
+      .btn-outline-brand {
+        font-weight: 600;
+        border-radius: 30px;
+      }
+    </style>
+  </head>
+  <body>
+
+        <main class="py-4">
+          <div class="app-wrap">
+            <div class="app-card p-4 p-md-5">
+              <div class="text-center mb-4">
+                <div class="text-center mb-3">
+                  <a href="https://milestones2wealth.com" target="_self">
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/10/cropped-Artboard-1-copy-7-1-scaled-1-768x257.png"
+                      alt="Milestones2Wealth Logo"
+                      style="max-width: 500px; height: auto"
+                  /></a>
+                </div>
+                <span class="brand-badge"
+                  >Goal Oriented • Simple • Personalized</span
+                >
+                <h1 class="mt-2 calc-header">INVESTMENT GOAL CALCULATOR</h1>
+                <p class="lead-subtitle mb-0">
+                  Track the fastest route to your next milestone.
+                </p>
+              </div>
+
+              <!-- Goal pills -->
+              <div class="text-center mb-4">
+                <div class="small mt-2 fw-bold subtitle">
+                  Select your financial wealth goal below. The chart shows
+                  <span class="fw-bold">time it takes to reach your goal</span>.
+                </div>
+                <div class="goal-grid">
+                  <button
+                    class="goal-btn"
+                    data-goal="200000"
+                    data-name="Self-Starter"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-2-1.png"
+                    />
+                    Self-Starter (₹2L)
+                  </button>
+
+                  <button
+                    class="goal-btn"
+                    data-goal="200000"
+                    data-name="Go-Getter"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/2L.png"
+                    />
+                    Go-Getter (₹2L)
+                  </button>
+
+                  <button
+                    class="goal-btn"
+                    data-goal="500000"
+                    data-name="Achiever"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-3.png"
+                    />
+                    Achiever (₹5L)
+                  </button>
+
+                  <button
+                    class="goal-btn"
+                    data-goal="1000000"
+                    data-name="Warrior"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-4.png"
+                    />
+                    Warrior (₹10L)
+                  </button>
+
+                  <button
+                    class="goal-btn"
+                    data-goal="2500000"
+                    data-name="Sharpshooter"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/25L.png"
+                    />
+                    Sharpshooter (₹25L)
+                  </button>
+
+                  <button
+                    class="goal-btn"
+                    data-goal="5000000"
+                    data-name="Maestro"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-6.png"
+                    />
+                    Maestro (₹50L)
+                  </button>
+
+                  <button
+                    class="goal-btn"
+                    data-goal="10000000"
+                    data-name="Ambassador"
+                  >
+                    <img
+                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-7.png"
+                    />
+                    Ambassador (₹1Cr)
+                  </button>
+                </div>
+              </div>
+
+              <div id="calcSection" class="row g-4 align-items-stretch d-none">
+                <!-- Pro Tip banner (hidden until after first Calculate) -->
+                <div id="proTipBanner" class="col-12 d-none">
+                  <div
+                    class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center mb-0"
+                  >
+                    <div class="small mb-2 mb-md-0">
+                      <strong>Pro Tip:</strong> You can reach your goal faster
+                      by increasing your <b>SIP Step-Up</b> and
+                      <b>Annual Corpus Top-Up</b>.
+                    </div>
+                    <button
+                      type="button"
+                      id="nudgeFocus"
+                      class="btn btn-sm btn-outline-brand ms-md-3"
+                    >
+                      Edit Step-Up & Top-Up
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Inputs -->
+                <div class="col-12 col-lg-5" id="inputsCol">
+                  <div class="h-100 border rounded-4 p-3 p-md-4">
+                    <h5 class="mb-3">Tell Us Your Plan</h5>
+                    <form id="calcForm" novalidate>
+                      <div class="mb-3">
+                        <label class="form-label" for="initialCorpus"
+                          >Initial corpus (₹)
+                          <span
+                            class="help"
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="The lump sum you already have invested."
+                            >?</span
+                          >
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="initialCorpus"
+                          placeholder="e.g., 50000"
+                          value="50000"
+                          min="0"
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="monthlySIP"
+                          >Monthly SIP (₹)
+                          <span
+                            class="help"
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Your monthly investment added at the end of each month."
+                            >?</span
+                          >
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="monthlySIP"
+                          placeholder="e.g., 10000"
+                          value="10000"
+                          min="0"
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="expectedReturn"
+                          >Expected annual return (%)
+                          <span
+                            class="help"
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Net annualised rate assumed for growth. This is just an estimate."
+                            >?</span
+                          >
+                        </label>
+                        <input
+                          type="range"
+                          class="form-range"
+                          id="expectedReturn"
+                          min="8"
+                          max="16"
+                          step="0.5"
+                          value="12"
+                        />
+                        <div>
+                          <span class="kpi-pill"
+                            ><span id="returnValue">12</span>% expected</span
+                          >
+                        </div>
+                      </div>
+
+                      <!-- ADVANCED INPUTS: hidden until user clicks Edit Step-Up & Top-Up -->
+                      <div class="mb-3 advanced-input d-none">
+                        <label class="form-label" for="stepUpAmt"
+                          >Yearly SIP Step-Up (₹)
+                          <span
+                            class="help"
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="How much should your monthly SIP increase every 12 months?"
+                            >?</span
+                          >
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="stepUpAmt"
+                          placeholder="e.g., 1000"
+                          min="0"
+                          value="0"
+                        />
+                      </div>
+
+                      <div class="mb-3 advanced-input d-none">
+                        <label class="form-label" for="topUpAmt">
+                          Annual Corpus Top-Up (₹)
+                          <span
+                            class="help"
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="How much extra will you add to your corpus every 12 months (month 12, 24, ...)?"
+                            >?</span
+                          >
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="topUpAmt"
+                          placeholder="e.g., 20000"
+                          min="0"
+                          value="0"
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        id="calcBtn"
+                        class="btn btn-success w-100"
+                        style="
+                          background: var(--brand-green);
+                          border-color: var(--brand-green);
+                        "
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Calculate time to each milestone based on your inputs"
+                      >
+                        Calculate
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Results (hidden until first Calculate) -->
+                <div class="col-12 col-lg-7 d-none" id="resultsCol">
+                  <div
+                    class="h-100 border rounded-4 p-3 p-md-4 d-flex flex-column"
+                  >
+                    <h5 class="mb-3">Results</h5>
+                    <div id="highlightGoal" class="small text-muted mb-2">
+                      No goal selected yet.
+                    </div>
+                    <div id="resultLine" class="mb-3 fw-semibold"></div>
+
+                    <div
+                      class="chart-wrap flex-grow-1 d-flex align-items-center"
+                    >
+                      <canvas id="goalChart" height="180"></canvas>
+                    </div>
+                    <div class="mt-2 text-center small text-muted">
+                      X-axis: Milestone Goals • amount • Y-axis: Months needed
+                      (lower is faster)
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Glossary + Pro Tips Row -->
+              <div class="row g-4 mt-5">
+                <!-- Left: Glossary / Learning Hub -->
+                <div class="col-12 col-lg-8">
+                  <h5 class="mb-3">Glossary & Learning Hub</h5>
+                  <div class="accordion" id="glossaryAccordion">
+                    <!-- a. Basics of SIP -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="glossary1h">
+                        <button
+                          class="accordion-button"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#glossary1"
+                          aria-expanded="true"
+                          aria-controls="glossary1"
+                        >
+                          a) What are the basics of SIP?
+                        </button>
+                      </h2>
+                      <div
+                        id="glossary1"
+                        class="accordion-collapse collapse show"
+                        aria-labelledby="glossary1h"
+                        data-bs-parent="#glossaryAccordion"
+                      >
+                        <div class="accordion-body">
+                          <div class="ratio ratio-16x9">
+                            <iframe
+                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                              title="YouTube video player"
+                              frameborder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerpolicy="strict-origin-when-cross-origin"
+                              allowfullscreen
+                              loading="lazy"
+                            ></iframe>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- b. Step-up SIP & Top-Ups -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="glossary2h">
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#glossary2"
+                          aria-expanded="false"
+                          aria-controls="glossary2"
+                        >
+                          b) What is stepping up your SIP and annual/bi-annual
+                          top up?
+                        </button>
+                      </h2>
+                      <div
+                        id="glossary2"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="glossary2h"
+                        data-bs-parent="#glossaryAccordion"
+                      >
+                        <div class="accordion-body">
+                          <div class="ratio ratio-16x9">
+                            <iframe
+                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                              title="YouTube video player"
+                              frameborder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerpolicy="strict-origin-when-cross-origin"
+                              allowfullscreen
+                              loading="lazy"
+                            ></iframe>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- c. Power of compounding -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="glossary3h">
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#glossary3"
+                          aria-expanded="false"
+                          aria-controls="glossary3"
+                        >
+                          c) What is the power of compounding?
+                        </button>
+                      </h2>
+                      <div
+                        id="glossary3"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="glossary3h"
+                        data-bs-parent="#glossaryAccordion"
+                      >
+                        <div class="accordion-body">
+                          <div class="ratio ratio-16x9">
+                            <iframe
+                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                              title="YouTube video player"
+                              frameborder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerpolicy="strict-origin-when-cross-origin"
+                              allowfullscreen
+                              loading="lazy"
+                            ></iframe>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- d. Goal mapping -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="glossary4h">
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#glossary4"
+                          aria-expanded="false"
+                          aria-controls="glossary4"
+                        >
+                          d) Why is Goal Mapping important?
+                        </button>
+                      </h2>
+                      <div
+                        id="glossary4"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="glossary4h"
+                        data-bs-parent="#glossaryAccordion"
+                      >
+                        <div class="accordion-body">
+                          <div class="ratio ratio-16x9">
+                            <iframe
+                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                              title="YouTube video player"
+                              frameborder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerpolicy="strict-origin-when-cross-origin"
+                              allowfullscreen
+                              loading="lazy"
+                            ></iframe>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- e. Detailed calculation method (PDF) -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="glossary5h">
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#glossary5"
+                          aria-expanded="false"
+                          aria-controls="glossary5"
+                        >
+                          e) What is our detailed calculation method?
+                        </button>
+                      </h2>
+                      <div
+                        id="glossary5"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="glossary5h"
+                        data-bs-parent="#glossaryAccordion"
+                      >
+                        <div class="accordion-body">
+                          <p class="mb-2">
+                            You can download the full Milestones2Wealth
+                            calculation guide here:
+                          </p>
+                          <a
+                            class="btn btn-outline-brand"
+                            href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            Open Detailed Calculation Method (PDF)
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right: Pro Tip static section -->
+                <div class="col-12 col-lg-4">
+                  <div class="protip-card h-100 p-3 p-md-4">
+                    <h5 class="mb-3">Pro Tips for Smarter Planning</h5>
+                    <ul class="small mb-0">
+                      <li>
+                        <strong>Plan with inflation –</strong> Future cost will
+                        be higher — add a buffer in pace with inflation.
+                      </li>
+                      <li>
+                        <strong>Match returns to timeframe –</strong>
+                        Short-term: 6–7%. Long-term: 10–12%.
+                      </li>
+                      <li>
+                        <strong>Start early, even small –</strong> Time beats
+                        amount in compounding.
+                      </li>
+                      <li>
+                        <strong>Automate SIP –</strong> Follow “Income – Savings
+                        = Expenses.”
+                      </li>
+                      <li>
+                        <strong>Use Step-Up SIP –</strong> A 5–10% yearly
+                        increase cuts years off your goal.
+                      </li>
+                      <li>
+                        <strong>Add small top-ups –</strong> Even ₹5k–₹25k
+                        yearly speeds up your milestone.
+                      </li>
+                      <li>
+                        <strong>Stay consistent –</strong> Missing SIPs delays
+                        your goal more than you think.
+                      </li>
+                      <li>
+                        <strong>Review yearly –</strong> Adjust SIP or returns
+                        based on income and goals.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center mt-5">
+                <a
+                  href="https://itght-my.sharepoint.com/personal/nirupama_ithought_co_in/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY%2FM2W%20Calculator%20%2D%20FAQ%2Epdf&parent=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY&ga=1"
+                  target="_blank"
+                  class="btn btn-outline-brand px-4 py-2"
+                >
+                  📘 Frequently Asked Questions
+                </a>
+              </div>
+              
+            </div>
+            <div class="zf-wrapper">
+                <div
+                  id="zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
+                >
+                <script type="text/javascript">
+                  (function () {
+                    try {
+                      var f = document.createElement("iframe");
+
+                      var ifrmSrc =
+                        "https://forms.zohopublic.in/ithought/form/SignUp/formperma/sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA?zf_rszfm=1";
+
+                      try {
+                        if (
+                          typeof ZFAdvLead != "undefined" &&
+                          typeof zfutm_zfAdvLead != "undefined"
+                        ) {
+                          for (
+                            var prmIdx = 0;
+                            prmIdx < ZFAdvLead.utmPNameArr.length;
+                            prmIdx++
+                          ) {
+                            var utmPm = ZFAdvLead.utmPNameArr[prmIdx];
+                            utmPm =
+                              ZFAdvLead.isSameDomian &&
+                              ZFAdvLead.utmcustPNameArr.indexOf(utmPm) == -1
+                                ? "zf_" + utmPm
+                                : utmPm;
+                            var utmVal = zfutm_zfAdvLead.zfautm_gC_enc(
+                              ZFAdvLead.utmPNameArr[prmIdx]
+                            );
+                            if (typeof utmVal !== "undefined") {
+                              if (utmVal != "") {
+                                if (ifrmSrc.indexOf("?") > 0) {
+                                  ifrmSrc =
+                                    ifrmSrc + "&" + utmPm + "=" + utmVal;
+                                } else {
+                                  ifrmSrc =
+                                    ifrmSrc + "?" + utmPm + "=" + utmVal;
+                                }
+                              }
+                            }
+                          }
+                        }
+                        if (
+                          typeof ZFLead !== "undefined" &&
+                          typeof zfutm_zfLead !== "undefined"
+                        ) {
+                          for (
+                            var prmIdx = 0;
+                            prmIdx < ZFLead.utmPNameArr.length;
+                            prmIdx++
+                          ) {
+                            var utmPm = ZFLead.utmPNameArr[prmIdx];
+                            var utmVal = zfutm_zfLead.zfutm_gC_enc(
+                              ZFLead.utmPNameArr[prmIdx]
+                            );
+                            if (typeof utmVal !== "undefined") {
+                              if (utmVal != "") {
+                                if (ifrmSrc.indexOf("?") > 0) {
+                                  ifrmSrc =
+                                    ifrmSrc + "&" + utmPm + "=" + utmVal; //No I18N
+                                } else {
+                                  ifrmSrc =
+                                    ifrmSrc + "?" + utmPm + "=" + utmVal; //No I18N
+                                }
+                              }
+                            }
+                          }
+                        }
+                      } catch (e) {}
+
+                      f.src = ifrmSrc;
+                      f.style.border = "none";
+                      f.style.height = "544px";
+                      f.style.width = "100%";
+                      f.style.transition = "all 0.5s ease";
+                      f.setAttribute("aria-label", "Book A Free Call");
+
+                      var d = document.getElementById(
+                        "zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
+                      );
+                      d.appendChild(f);
+                      window.addEventListener(
+                        "message",
+                        function () {
+                          var evntData = event.data;
+                          if (evntData && evntData.constructor == String) {
+                            var zf_ifrm_data = evntData.split("|");
+                            if (
+                              zf_ifrm_data.length == 2 ||
+                              zf_ifrm_data.length == 3
+                            ) {
+                              var zf_perma = zf_ifrm_data[0];
+                              var zf_ifrm_ht_nw =
+                                parseInt(zf_ifrm_data[1], 10) + 15 + "px";
+                              var iframe = document
+                                .getElementById(
+                                  "zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
+                                )
+                                .getElementsByTagName("iframe")[0];
+                              if (
+                                iframe.src.indexOf("formperma") > 0 &&
+                                iframe.src.indexOf(zf_perma) > 0
+                              ) {
+                                var prevIframeHeight = iframe.style.height;
+                                var zf_tout = false;
+                                if (zf_ifrm_data.length == 3) {
+                                  iframe.scrollIntoView();
+                                  zf_tout = true;
+                                }
+
+                                if (prevIframeHeight != zf_ifrm_ht_nw) {
+                                  if (zf_tout) {
+                                    setTimeout(function () {
+                                      iframe.style.height = zf_ifrm_ht_nw;
+                                    }, 500);
+                                  } else {
+                                    iframe.style.height = zf_ifrm_ht_nw;
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        false
+                      );
+                    } catch (e) {}
+                  })();
+                </script>
+                </div>
+              </div>
+          </div>
+        </main>
+
+
+    <!-- Load Bootstrap JS BEFORE any script that uses `bootstrap.*` -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // --- Safety checks (helpful in debugging) ---
+      (function sanity() {
+        if (typeof Chart === "undefined") console.error("Chart.js not loaded");
+        if (typeof bootstrap === "undefined")
+          console.error("Bootstrap JS not loaded");
+      })();
+
+      // --- Bootstrap tooltips ---
+      const tooltipEls = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
       );
-    // Libs present
-    t('Bootstrap available', typeof bootstrap !== 'undefined');
-    t('Chart.js available', typeof Chart !== 'undefined');
-    // Monotonicity: higher goal should take >= months
-    const base = monthsToReachGoal(50000,10000,12,200000,0,0);
-    const higher = monthsToReachGoal(50000,10000,12,500000,0,0);
-    t('Higher goal takes longer or equal', higher >= base && base !== Infinity);
-    // Yearly step-up reduces months compared to no step-up (when enabled)
-    const noStep = monthsToReachGoal(50000,10000,12,500000,0,0);
-    const withStep = monthsToReachGoal(50000,10000,12,500000,1000,0);
-    t('Yearly step-up reduces time', withStep < noStep);
-    // Yearly top-up reduces months
-    const noTop = monthsToReachGoal(50000,10000,12,500000,0,0);
-    const withTop = monthsToReachGoal(50000,10000,12,500000,0,20000);
-    t('Annual top-up reduces time', withTop < noTop);
-    // Step-up inert before 12 months
-    const quickGoalNoStep = monthsToReachGoal(100000,50000,12,120000,0,0);
-    const quickGoalWithStep = monthsToReachGoal(100000,50000,12,120000,5000,0);
-    t('Step-up inert before 12 months', quickGoalNoStep === quickGoalWithStep);
-  })();
+      if (typeof bootstrap !== "undefined" && tooltipEls.length) {
+        tooltipEls.map((el) => new bootstrap.Tooltip(el));
+      }
 
-  // --- Events ---
-  document.getElementById('expectedReturn').addEventListener('input', (e)=>{
-    document.getElementById('returnValue').textContent = e.target.value;
-  });
+      // --- UI state ---
+      const goals = [200000, 500000, 1000000, 2500000, 5000000, 10000000];
+      const goalMeta = {
+        200000: "Go Getter",
+        500000: "Achiever",
+        1000000: "Warrior",
+        2500000: "Sharpshooter",
+        5000000: "Maestro",
+        10000000: "Ambassador",
+      };
 
-  document.getElementById('calcBtn').addEventListener('click', () => computeAndDraw(true));
+      // --- Goal Icons for chart points ---
+      const goalIconUrls = {
+        200000:
+          "https://milestones2wealth.com/wp-content/uploads/2025/07/2L.png", // Go-Getter 2L
+        500000:
+          "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-3.png", // Achiever 5L
+        1000000:
+          "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-4.png", // Warrior 10L
+        2500000:
+          "https://milestones2wealth.com/wp-content/uploads/2025/07/25L.png", // Sharpshooter 25L
+        5000000:
+          "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-6.png", // Maestro 50L
+        10000000:
+          "https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-7.png", // Ambassador 1Cr
+      };
 
-  // "Edit Step-Up & Top-Up" click → reveal advanced inputs and scroll
-  document.getElementById('nudgeFocus')?.addEventListener('click', () => {
-    advancedMode = true;
-    document.querySelectorAll('.advanced-input').forEach(el => el.classList.remove('d-none'));
-    const step = document.getElementById('stepUpAmt');
-    step?.scrollIntoView({ behavior:'smooth', block:'center' });
-    setTimeout(() => step?.focus(), 300);
-  });
+      const goalIconImages = {};
+      Object.entries(goalIconUrls).forEach(([goal, url]) => {
+        const img = new Image();
+        img.src = url;
+        img.width = 32;
+        img.height = 32;
+        goalIconImages[goal] = img;
+      });
 
-  // No initial computeAndDraw() call – user must choose goal & click Calculate
-</script>
+      let selectedGoal = null;
+      let chart;
+      let lastResults = null; // cache last computation
+      let advancedMode = false; // becomes true when user clicks "Edit Step-Up & Top-Up"
 
-</body>
+      function formatIndianAmount(num) {
+        if (num >= 10000000) {
+          // ≥ 1 Cr
+          return "₹" + num / 10000000 + " Crore";
+        } else if (num >= 100000) {
+          // ≥ 1 Lakh
+          return "₹" + num / 100000 + " Lakh" + (num >= 200000 ? "s" : "");
+        }
+        return "₹" + num.toLocaleString("en-IN");
+      }
+
+      // --- Goal buttons ---
+      document.querySelectorAll(".goal-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // visual active state
+          document
+            .querySelectorAll(".goal-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          // set selected goal
+          selectedGoal = parseInt(btn.dataset.goal, 10);
+          const name = btn.dataset.name || goalMeta[selectedGoal] || "";
+
+          // update highlight text (even if results are hidden, ready for later)
+          document.getElementById(
+            "highlightGoal"
+          ).innerHTML = `Selected goal: <span class="accent fw-bold">${name} (₹${selectedGoal.toLocaleString(
+            "en-IN"
+          )})</span>`;
+
+          // show calculator section (inputs) if hidden
+          const calcSection = document.getElementById("calcSection");
+          if (calcSection.classList.contains("d-none")) {
+            calcSection.classList.remove("d-none");
+            calcSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+
+          // Always compute with current/default inputs, but WITHOUT Pro Tip
+          computeAndDraw(false);
+
+          // if we already have results from a previous calculation, update summary
+          if (lastResults) {
+            showSingleGoalSummary(lastResults, selectedGoal);
+          }
+        });
+      });
+
+      // --- Core calculator ---
+      function monthsToReachGoal(
+        initial,
+        sip,
+        annualRatePct,
+        goal,
+        stepUpAmt = 0,
+        topUpAmt = 0
+      ) {
+        // Simulate monthly compounding; SIP is added end of each month.
+        // Yearly SIP step-up: +stepUpAmt every 12 months.
+        // Annual top-up: +topUpAmt at the start of each new year (month 12, 24, ...).
+        const r = annualRatePct / 100 / 12; // monthly rate
+        let total = Math.max(0, Number(initial) || 0);
+        let monthlySIP = Math.max(0, Number(sip) || 0);
+        const step = Math.max(0, Number(stepUpAmt) || 0);
+        const top = Math.max(0, Number(topUpAmt) || 0);
+
+        const MAX_MONTHS = 12000; // hard stop to avoid infinite loops
+        let m = 0;
+        while (total < goal && m < MAX_MONTHS) {
+          if (top > 0 && m > 0 && m % 12 === 0) {
+            total += top; // yearly top-up at month 12,24,36,...
+          }
+          if (step > 0 && m > 0 && m % 12 === 0) {
+            monthlySIP += step; // every 12 months increase SIP
+          }
+          // growth + SIP contribution at month end
+          total = total * (1 + r) + monthlySIP;
+          m++;
+        }
+        return m >= MAX_MONTHS ? Infinity : m; // months
+      }
+
+      function computeAndDraw(showProTip = true) {
+        const initial =
+          Number(document.getElementById("initialCorpus").value) || 0;
+        const sip = Number(document.getElementById("monthlySIP").value) || 0;
+        const rate =
+          Number(document.getElementById("expectedReturn").value) || 0;
+
+        // Step-Up & Top-Up are only applied after user chooses to edit them
+        const stepAmt = advancedMode
+          ? Number(document.getElementById("stepUpAmt").value) || 0
+          : 0;
+
+        const topAmt = advancedMode
+          ? Number(document.getElementById("topUpAmt").value) || 0
+          : 0;
+
+        // Validate minimal inputs
+        if (rate <= 0 || (initial <= 0 && sip <= 0)) {
+          document.getElementById("resultLine").innerHTML =
+            '<span class="text-danger">Enter a positive return and at least one positive amount (initial or SIP).</span>';
+          return;
+        }
+
+        const monthsArr = goals.map((g) =>
+          monthsToReachGoal(initial, sip, rate, g, stepAmt, topAmt)
+        );
+
+        lastResults = { initial, sip, rate, stepAmt, topAmt, monthsArr };
+        drawLineChart(monthsArr);
+
+        if (selectedGoal) {
+          showSingleGoalSummary(lastResults, selectedGoal);
+        } else {
+          document.getElementById("resultLine").textContent =
+            "Select a goal above to see the exact time.";
+        }
+
+        // Always show Results once we’ve computed
+        document.getElementById("resultsCol").classList.remove("d-none");
+
+        // Only show the Pro Tip banner when explicitly requested (Calculate clicked)
+        if (showProTip) {
+          document.getElementById("proTipBanner").classList.remove("d-none");
+        }
+      }
+
+      function showSingleGoalSummary(cache, goal) {
+        const idx = goals.indexOf(goal);
+        if (idx === -1) return;
+        const m = cache.monthsArr[idx];
+        const name = goalMeta[goal] || "";
+        if (m === Infinity) {
+          document.getElementById(
+            "resultLine"
+          ).innerHTML = `Reaching <b>${name} (₹${goal.toLocaleString(
+            "en-IN"
+          )})</b> isn\'t feasible with current inputs. Try increasing SIP/returns or adding top-ups.`;
+          return;
+        }
+        const years = Math.floor(m / 12);
+        const rem = m % 12;
+        document.getElementById(
+          "resultLine"
+        ).innerHTML = `You\'ll reach <b>${name} (₹${goal.toLocaleString(
+          "en-IN"
+        )})</b> in <span class=\"accent\">${years} year(s) ${rem} month(s)</span>.`;
+      }
+
+      // --- Chart.js (line) ---
+      const goalLabels = goals.map((g) => formatIndianAmount(g));
+
+      function drawLineChart(monthsArr) {
+        const ctx = document.getElementById("goalChart").getContext("2d");
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: goalLabels,
+            datasets: [
+              {
+                label: "Months to reach each goal",
+                data: monthsArr.map((v) => (v === Infinity ? null : v)),
+                tension: 0.3,
+                borderColor:
+                  getComputedStyle(document.documentElement)
+                    .getPropertyValue("--brand-green")
+                    .trim() || "#1faa59",
+                backgroundColor: "rgba(31,170,89,.15)",
+                pointRadius: 5,
+                pointHoverRadius: 8,
+                spanGaps: true,
+                clip: 20,
+                pointBackgroundColor: "transparent",
+                pointBorderWidth: 0,
+                pointStyle: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  const goalValue = goals[idx]; // 200000, 500000, ...
+                  return goalIconImages[goalValue] || "circle";
+                },
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "nearest", intersect: false },
+            layout: {
+              padding: {
+                left: 24, // space so first icon doesn’t touch the border
+                right: 24, // same for last icon
+                top: 10,
+                bottom: 0,
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) =>
+                    ctx.parsed.y == null
+                      ? "Not reachable"
+                      : `${ctx.parsed.y} month(s)`,
+                },
+              },
+              title: {
+                display: true,
+                text: "Time to Reach Each Milestone",
+                color: "#143",
+                padding: { top: 6, bottom: 6 },
+              },
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "Milestone Goals (₹ Amount)",
+                  color: "#143",
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Months Needed (lower is faster)",
+                  color: "#143",
+                },
+                beginAtZero: true,
+                ticks: { stepSize: 6 },
+              },
+            },
+          },
+        });
+      }
+
+      // --- Lightweight test cases (run once) ---
+      (function runTests() {
+        const t = (name, cond) =>
+          console[cond ? "log" : "error"](
+            `%cTEST ${cond ? "PASS" : "FAIL"}: ${name}`,
+            `font-weight:bold;color:${cond ? "#1faa59" : "#b00020"}`
+          );
+        // Libs present
+        t("Bootstrap available", typeof bootstrap !== "undefined");
+        t("Chart.js available", typeof Chart !== "undefined");
+        // Monotonicity: higher goal should take >= months
+        const base = monthsToReachGoal(50000, 10000, 12, 200000, 0, 0);
+        const higher = monthsToReachGoal(50000, 10000, 12, 500000, 0, 0);
+        t(
+          "Higher goal takes longer or equal",
+          higher >= base && base !== Infinity
+        );
+        // Yearly step-up reduces months compared to no step-up (when enabled)
+        const noStep = monthsToReachGoal(50000, 10000, 12, 500000, 0, 0);
+        const withStep = monthsToReachGoal(50000, 10000, 12, 500000, 1000, 0);
+        t("Yearly step-up reduces time", withStep < noStep);
+        // Yearly top-up reduces months
+        const noTop = monthsToReachGoal(50000, 10000, 12, 500000, 0, 0);
+        const withTop = monthsToReachGoal(50000, 10000, 12, 500000, 0, 20000);
+        t("Annual top-up reduces time", withTop < noTop);
+        // Step-up inert before 12 months
+        const quickGoalNoStep = monthsToReachGoal(
+          100000,
+          50000,
+          12,
+          120000,
+          0,
+          0
+        );
+        const quickGoalWithStep = monthsToReachGoal(
+          100000,
+          50000,
+          12,
+          120000,
+          5000,
+          0
+        );
+        t(
+          "Step-up inert before 12 months",
+          quickGoalNoStep === quickGoalWithStep
+        );
+      })();
+
+      // --- Events ---
+      document
+        .getElementById("expectedReturn")
+        .addEventListener("input", (e) => {
+          document.getElementById("returnValue").textContent = e.target.value;
+        });
+
+      document
+        .getElementById("calcBtn")
+        .addEventListener("click", () => computeAndDraw(true));
+
+      // "Edit Step-Up & Top-Up" click → reveal advanced inputs and scroll
+      document.getElementById("nudgeFocus")?.addEventListener("click", () => {
+        advancedMode = true;
+        document
+          .querySelectorAll(".advanced-input")
+          .forEach((el) => el.classList.remove("d-none"));
+        const step = document.getElementById("stepUpAmt");
+        step?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => step?.focus(), 300);
+      });
+
+      // No initial computeAndDraw() call – user must choose goal & click Calculate
+    </script>
+  </body>
 </html>
