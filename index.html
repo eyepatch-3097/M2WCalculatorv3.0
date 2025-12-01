@@ -83,7 +83,7 @@
       }
 
       .header-top-logo img {
-        max-width: 280px; /* Slightly larger logo */
+        max-width: 100px; /* Slightly larger logo */
         height: auto;
         transition: transform 0.3s ease;
       }
@@ -106,6 +106,21 @@
         letter-spacing: -1px;
         line-height: 1.1;
       }
+
+      /* Center title across full width (desktop only) */
+@media (min-width: 768px) {
+  .header-top {
+    position: relative;
+  }
+
+  .calc-header {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: max-content;
+  }
+}
 
       .brand-badge {
         display: inline-block;
@@ -151,9 +166,33 @@
       }
       @media (min-width: 992px) {
         .goal-grid {
-          grid-template-columns: repeat(6, 1fr);
+          grid-template-columns: repeat(4, 1fr);
         }
       }
+
+      /* Mobile: horizontal scroll / snap like a carousel */
+@media (max-width: 767.98px) {
+  .goal-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1.25rem;
+    padding-bottom: 1rem;
+  }
+
+  .goal-btn {
+    min-width: 75vw;          /* each card fills most of the viewport */
+    scroll-snap-align: center;
+  }
+
+  .goal-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+  .goal-grid::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.15);
+    border-radius: 999px;
+  }
+}
 
       .goal-btn {
         background: var(--brand-beige); 
@@ -446,7 +485,7 @@
                 </a>
               </div>
 
-              <h1 class="calc-header mb-0 text-center text-md-end">
+              <h1 class="calc-header mb-0 text-center">
                 INVESTMENT<br />GOAL CALCULATOR
               </h1>
             </div>
@@ -893,7 +932,7 @@
                       </p>
                       <a
                         class="btn btn-outline-brand"
-                        href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf"
+                        href="https://itght-my.sharepoint.com/personal/nirupama_ithought_co_in/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY%2FM2W%20Calculator%20%2D%20Detailed%20Calculation%20Method%2Epdf&parent=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY&ga=1"
                         target="_blank"
                         rel="noopener"
                       >
