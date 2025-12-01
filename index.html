@@ -160,15 +160,15 @@
       }
 
       /* Desktop & tablet: 2 rows (4 + 3), centered */
+/* Desktop & tablet: 2 rows (4 + 3), centered */
 .goal-grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;   /* center last row */
+  justify-content: center;   /* center rows on large screens */
   gap: 1.5rem;
-  margin: 1rem auto 0;       /* center the whole grid block */
+  margin: 1rem auto 0;
 }
 
-/* Default card width for non–mobile (drives 4 per row on wide screens) */
 .goal-btn {
   background: var(--brand-beige);
   border: 2px solid transparent;
@@ -188,23 +188,24 @@
   font-size: 1.1rem;
   box-shadow: none;
 
-  /* key line for 4 per row on desktop, 3 on second row */
+  /* 4 per row on wide screens */
   flex: 0 1 260px;
 }
 
-/* Mobile: horizontal scroll / snap like a carousel */
+/* Mobile: horizontal scroll / snap */
 @media (max-width: 767.98px) {
   .goal-grid {
     flex-wrap: nowrap;          /* single row */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 1.25rem;
-    padding-bottom: 1rem;
+    padding: 0 1rem 1rem;       /* little side padding */
+    justify-content: flex-start;/* start from left */
   }
 
   .goal-btn {
     flex: 0 0 75vw;             /* wide cards */
-    scroll-snap-align: center;
+    scroll-snap-align: start;   /* snap on left edge, not center */
   }
 
   .goal-grid::-webkit-scrollbar {
@@ -215,6 +216,7 @@
     border-radius: 999px;
   }
 }
+
       .goal-btn img {
         width: 120px; /* Bigger Icons */
         height: auto;
@@ -640,7 +642,7 @@
                         role="button"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
-                        title="Your monthly investment added at the beginning of each month."
+                        title="Your monthly investment added at the end of each month."
                         >?</span
                       >
                     </label>
