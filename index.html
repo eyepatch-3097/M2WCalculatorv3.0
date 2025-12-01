@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Investment Goal Calculator</title>
+
+    <!-- Google Fonts: Outfit for a modern financial look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -13,914 +22,1115 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <style>
-      #zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA {
-        margin-top: 40px; /* adds space above Zoho form */
-        width: 90vw !important;
-      }
-      .zf-wrapper {
-        width: 100% !important;
-        display: flex;
-        justify-content: center;
-        margin: 0 auto;
-      }
-      #zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA iframe {
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        background: #fff;
-      }
-
       :root {
-        --brand-green: #1faa59; /* primary */
-        --brand-yellow: #f5c842; /* accent */
-        --brand-deep: #0b2c20; /* background tint */
-      }
-      body {
-        background: linear-gradient(180deg, #0d1f16, #0f281c 30%, #0d1f16);
-        color: #122;
-        min-height: 100vh;
+        /* New Palette */
+        --brand-terra: #ed6a5a; /* Primary Brand / Header */
+        --brand-beige: #f3e7da; /* Background */
+        --brand-gold: #fbb13c; /* Accent / Warning */
+        --brand-teal: #37c0a2; /* Action / Growth / Success */
+        --brand-teal-dark: #2a967e;
+
+        /* Functional Colors derived from palette */
+        --text-primary: #1f2937; /* Dark Grey for contrast */
+        --text-secondary: #4b5563; /* Softer Grey */
+        --surface-white: #ffffff;
+        --surface-card: #ffffff;
         
-        align-items: center;
-        justify-content: center; /* ← add this */
-      }
-      .app-card {
-        background: #ffffff;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border-radius: 18px;
-      }
-      /* NEW: a wrapper that controls overall width */
-      .app-wrap {
-        max-width: 100vw;
-        margin: 0 auto;
-        width: 100%;
-        padding: 0;
+        --radius-lg: 0px; /* Removed radius for full screen */
+        --radius-md: 16px;
+        --radius-sm: 12px;
       }
 
-      /* nicer mobile width */
-      @media (max-width: 992px) {
-        .app-wrap {
-          width: min(98vw, 1400px);
+      body {
+        font-family: "Outfit", sans-serif;
+        /* Background is now covered by the card, but kept as fallback */
+        background: var(--surface-card);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 0; /* Remove padding to allow full coverage */
+        margin: 0;
+        font-size: 18px; /* Increased base font size */
+      }
+
+      .app-card {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        background: var(--surface-card);
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- Header Section --- */
+      .header-top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .header-top {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
         }
       }
 
-      .brand-badge {
-        display: inline-block;
-        background: var(--brand-green);
-        color: #fff;
-        padding: 0.35rem 0.6rem;
-        border-radius: 999px;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        font-size: 0.85rem;
+      .header-top-logo img {
+        max-width: 280px; /* Slightly larger logo */
+        height: auto;
+        transition: transform 0.3s ease;
       }
-      .btn-goal {
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        background: #f8fff3;
-        color: #13452d;
+      .header-top-logo img:hover {
+        transform: scale(1.02);
       }
-      .btn-goal.active {
-        background: var(--brand-yellow);
-        color: #1f1f1f;
-        border-color: var(--brand-yellow);
-        font-weight: 700;
-      }
-      .form-label .help {
-        color: var(--brand-green);
-        cursor: help;
-        font-weight: 700;
-      }
-      .help[role="button"] {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 1.25rem;
-        height: 1.25rem;
-        border-radius: 50%;
-        background: #eaf7ee;
-        border: 1px solid #bfe6cd;
-        font-size: 0.8rem;
-        margin-left: 0.25rem;
-      }
-      .accent {
-        color: var(--brand-green);
-      }
+
       .calc-header {
+        font-weight: 800;
+        font-size: 3.5rem; /* Bigger Header */
+        /* Gradient from Terra Cotta to Gold for warmth */
         background: linear-gradient(
           90deg,
-          var(--brand-green),
-          var(--brand-yellow)
+          var(--brand-terra),
+          #d9534f
         );
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
-        font-weight: 800;
-        font-size: 3rem;
+        letter-spacing: -1px;
+        line-height: 1.1;
       }
-      .kpi-pill {
-        background: #eaf7ee;
-        color: #144;
+
+      .brand-badge {
+        display: inline-block;
+        background: rgba(55, 192, 162, 0.1); 
+        color: var(--brand-teal-dark);
+        padding: 0.75rem 1.5rem; /* Larger padding */
         border-radius: 999px;
-        padding: 0.25rem 0.6rem;
         font-weight: 600;
-      }
-      .chart-wrap {
-        background: #fbfff7;
-        border: 1px dashed rgba(31, 170, 89, 0.25);
-        border-radius: 14px;
-        padding: 1rem;
-        min-height: 500px;
-      }
-
-      /* Branded outline button with proper hover contrast */
-      .btn-outline-brand {
-        border-color: var(--brand-green);
-        color: var(--brand-green);
-      }
-
-      .btn-outline-brand:hover,
-      .btn-outline-brand:focus {
-        background-color: var(--brand-green);
-        border-color: var(--brand-green);
-        color: #fff; /* stays readable on green background */
-      }
-
-      .btn-outline-brand:active {
-        background-color: #188e4b; /* optional: slightly darker press state */
-        border-color: #188e4b;
-        color: #fff;
-      }
-
-      .app-card img {
-        max-width: 300px;
-        height: auto;
-      }
-
-      /* Optional: subtle dashed accent like chart box */
-      #nudgeCard {
-        border: 1px dashed rgba(245, 200, 66, 0.6);
+        font-size: 1.1rem; /* Larger text */
+        border: 1px solid rgba(55, 192, 162, 0.2);
       }
 
       .lead-subtitle {
-        font-size: 1.5rem; /* tweak → 1.25rem for bigger, 1.35rem for more hero-like */
-        font-weight: 500;
-        color: #455; /* slightly darker than text-muted for better readability */
+        font-size: 1.5rem; /* Larger text */
+        font-weight: 400;
+        color: var(--text-secondary);
+        margin-top: 1rem;
       }
 
+      /* --- Goal Grid System --- */
       .subtitle {
-        font-size: 1.25rem;
-        font-weight: 300;
-        border-color: #13452d;
-        border-style: solid;
-        border-radius: 20px;
-        padding-top: 2px;
-        padding-bottom: 2px;
-        padding-left: 3px;
-        padding-right: 3px;
-        border-width: 1px;
-        background-color: rgb(252, 207, 214);
-        color: #ef7060;
-        margin-bottom: 10px;
+        display: inline-block;
+        background: rgba(237, 106, 90, 0.08); 
+        color: var(--brand-terra);
+        border: 1px solid rgba(237, 106, 90, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.6rem 1.5rem;
+        font-size: 1.1rem; /* Larger text */
+        margin-bottom: 2rem;
       }
 
-      /* GOAL BUTTONS */
+      .goal-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 1.5rem; /* Increased gap */
+        margin-top: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .goal-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (min-width: 992px) {
+        .goal-grid {
+          grid-template-columns: repeat(6, 1fr);
+        }
+      }
+
       .goal-btn {
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        background: #f8fff3;
-        color: #13452d;
-        border-radius: 14px;
-        padding: 12px 16px;
-        width: 200px;
-        height: 200px;
-        font-size: 0.85rem;
-        font-weight: 600;
+        background: var(--brand-beige); 
+        border: 2px solid transparent;
+        border-radius: var(--radius-md);
+        padding: 2rem 1rem; /* Increased padding */
+        height: 100%;
+        min-height: 220px; /* Taller cards */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 1.1rem; /* Bigger text */
+        box-shadow: none;
       }
 
       .goal-btn img {
-        width: 120px; /* tweak icon size here */
+        width: 120px; /* Bigger Icons */
         height: auto;
-        margin-bottom: 6px;
+        margin-bottom: 1.5rem;
+        transition: transform 0.25s ease;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+        display: block; /* Ensure block level for centering */
+        margin-left: auto;
+        margin-right: auto;
       }
 
       .goal-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        transform: translateY(-5px);
+        background: #fff;
+        border-color: var(--brand-gold); 
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
       }
 
+      .goal-btn:hover img {
+        transform: scale(1.1);
+      }
+
+      /* Active State */
       .goal-btn.active {
-        background: var(--brand-yellow);
-        border-color: var(--brand-yellow);
-        color: #1f1f1f;
-        transform: translateY(-3px);
+        background: #fff;
+        border-color: var(--brand-teal); 
+        color: var(--brand-teal-dark);
+        box-shadow: 0 0 0 4px rgba(55, 192, 162, 0.15);
       }
 
-      .goal-grid {
-        display: flex;
-        flex-wrap: wrap;
+      /* --- Forms & Inputs --- */
+      .form-label {
+        font-weight: 600;
+        font-size: 1.1rem; /* Larger label */
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+      }
+
+      .form-label .help {
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
-        gap: 12px;
+        width: 22px; /* Bigger help icon */
+        height: 22px;
+        background: var(--brand-gold); 
+        color: #fff;
+        border-radius: 50%;
+        font-size: 0.85rem;
+        margin-left: 8px;
+        cursor: help;
+        border: none;
       }
 
+      .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.25rem; /* Larger padding */
+        font-size: 1.1rem; /* Larger input text */
+        font-weight: 500;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+        background-color: #fafafa;
+      }
+
+      .form-control:focus {
+        border-color: var(--brand-teal);
+        box-shadow: 0 0 0 4px rgba(55, 192, 162, 0.1);
+        background: #fff;
+      }
+
+      .form-range {
+        height: 1.5rem;
+      }
+      .form-range::-webkit-slider-thumb {
+        background: var(--brand-teal);
+        width: 20px;
+        height: 20px;
+        margin-top: -8px;
+      }
+      .form-range::-webkit-slider-runnable-track {
+        background-color: #e2e8f0;
+        height: 0.5rem;
+      }
+
+      .kpi-pill {
+        display: inline-block;
+        background: var(--brand-teal);
+        color: #fff;
+        font-weight: 700;
+        padding: 0.4rem 1rem;
+        border-radius: 99px;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      #calcBtn {
+        background: linear-gradient(
+          135deg,
+          var(--brand-teal),
+          var(--brand-teal-dark)
+        );
+        border: none;
+        padding: 1.25rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-radius: var(--radius-sm);
+        margin-top: 1.5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      #calcBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(55, 192, 162, 0.3);
+      }
+
+      #calcBtn:active {
+        transform: translateY(0);
+      }
+
+      /* --- Results Area --- */
+      #resultsCol .h-100 {
+        background: var(--brand-beige); 
+        border: 1px solid rgba(0,0,0,0.05);
+      }
+
+      .chart-wrap {
+        position: relative;
+        background: #fff;
+        border: 1px dashed rgba(55, 192, 162, 0.3);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        min-height: 450px;
+      }
+
+      #resultLine {
+        font-size: 1.5rem; /* Larger Result Text */
+        color: var(--brand-teal-dark);
+        line-height: 1.5;
+      }
+      .accent {
+        color: var(--brand-terra);
+        font-weight: 700;
+      }
+
+      /* --- Pro Tip & Accordion --- */
       .protip-card {
-        background: #fbfff7;
-        border: 1px dashed rgba(31, 170, 89, 0.3);
-        border-radius: 14px;
+        background: linear-gradient(
+          145deg,
+          #fffbf0 0%,
+          #fff 100%
+        ); 
+        border: 1px solid rgba(251, 177, 60, 0.2); 
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-size: 1.05rem; /* Larger text */
       }
-
       .protip-card h5 {
-        color: #143;
+        color: #d97706; 
+        font-weight: 700;
+        font-size: 1.4rem;
+      }
+      .protip-card li {
+        margin-bottom: 0.75rem;
+        position: relative;
+        padding-left: 0.5rem;
       }
 
-      .protip-card ul {
-        padding-left: 1.2rem;
+      .accordion-item {
+        border: 1px solid #e2e8f0;
+        margin-bottom: 0.5rem;
+        border-radius: var(--radius-sm) !important;
+        overflow: hidden;
       }
-
-      .protip-card li + li {
-        margin-top: 0.25rem;
+      .accordion-button {
+        background: #fff;
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 1.1rem; /* Larger accordion text */
+        padding: 1.25rem;
+        box-shadow: none !important;
+      }
+      .accordion-button:not(.collapsed) {
+        background: rgba(55, 192, 162, 0.08);
+        color: var(--brand-teal-dark);
+      }
+      .accordion-button:focus {
+        border-color: rgba(55, 192, 162, 0.2);
+        box-shadow: 0 0 0 4px rgba(55, 192, 162, 0.1);
       }
 
       .btn-outline-brand {
+        border: 2px solid var(--brand-terra);
+        color: var(--brand-terra);
         font-weight: 600;
-        border-radius: 30px;
+        border-radius: 99px;
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+      }
+      .btn-outline-brand:hover {
+        background: var(--brand-terra);
+        color: #fff;
+      }
+      
+      .text-warning-emphasis {
+         color: #92400e !important;
+      }
+
+      /* --- Zoho Form Overrides --- */
+      #zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA {
+        margin-top: 60px;
+      }
+      .zf-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+      }
+      #zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA iframe {
+        border-radius: var(--radius-md);
+        box-shadow: none; 
+        background: #fff;
+        /* Ensure it can go wide */
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      /* Main container inside the full width card */
+      .content-container {
+        width: 100%;
+        max-width: 1400px; /* Constrain content but keep full width BG */
+        margin: 0 auto;
+      }
+
+      /* Animation Utility */
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
   <body>
-
-        <main class="py-4">
-          <div class="app-wrap">
-            <div class="app-card p-4 p-md-5">
-              <div class="text-center mb-4">
-                <div class="text-center mb-3">
-                  <a href="https://milestones2wealth.com" target="_self">
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/10/cropped-Artboard-1-copy-7-1-scaled-1-768x257.png"
-                      alt="Milestones2Wealth Logo"
-                      style="max-width: 500px; height: auto"
-                  /></a>
-                </div>
-                <span class="brand-badge"
-                  >Goal Oriented • Simple • Personalized</span
-                >
-                <h1 class="mt-2 calc-header">INVESTMENT GOAL CALCULATOR</h1>
-                <p class="lead-subtitle mb-0">
-                  Track the fastest route to your next milestone.
-                </p>
-              </div>
-
-              <!-- Goal pills -->
-              <div class="text-center mb-4">
-                <div class="small mt-2 fw-bold subtitle">
-                  Select your financial wealth goal below. The chart shows
-                  <span class="fw-bold">time it takes to reach your goal</span>.
-                </div>
-                <div class="goal-grid">
-                  <button
-                    class="goal-btn"
-                    data-goal="200000"
-                    data-name="Self-Starter"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-2-1.png"
-                    />
-                    Self-Starter (₹2L)
-                  </button>
-
-                  <button
-                    class="goal-btn"
-                    data-goal="200000"
-                    data-name="Go-Getter"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/2L.png"
-                    />
-                    Go-Getter (₹2L)
-                  </button>
-
-                  <button
-                    class="goal-btn"
-                    data-goal="500000"
-                    data-name="Achiever"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-3.png"
-                    />
-                    Achiever (₹5L)
-                  </button>
-
-                  <button
-                    class="goal-btn"
-                    data-goal="1000000"
-                    data-name="Warrior"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-4.png"
-                    />
-                    Warrior (₹10L)
-                  </button>
-
-                  <button
-                    class="goal-btn"
-                    data-goal="2500000"
-                    data-name="Sharpshooter"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/25L.png"
-                    />
-                    Sharpshooter (₹25L)
-                  </button>
-
-                  <button
-                    class="goal-btn"
-                    data-goal="5000000"
-                    data-name="Maestro"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-6.png"
-                    />
-                    Maestro (₹50L)
-                  </button>
-
-                  <button
-                    class="goal-btn"
-                    data-goal="10000000"
-                    data-name="Ambassador"
-                  >
-                    <img
-                      src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-7.png"
-                    />
-                    Ambassador (₹1Cr)
-                  </button>
-                </div>
-              </div>
-
-              <div id="calcSection" class="row g-4 align-items-stretch d-none">
-                <!-- Pro Tip banner (hidden until after first Calculate) -->
-                <div id="proTipBanner" class="col-12 d-none">
-                  <div
-                    class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center mb-0"
-                  >
-                    <div class="small mb-2 mb-md-0">
-                      <strong>Pro Tip:</strong> You can reach your goal faster
-                      by increasing your <b>SIP Step-Up</b> and
-                      <b>Annual Corpus Top-Up</b>.
-                    </div>
-                    <button
-                      type="button"
-                      id="nudgeFocus"
-                      class="btn btn-sm btn-outline-brand ms-md-3"
-                    >
-                      Edit Step-Up & Top-Up
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Inputs -->
-                <div class="col-12 col-lg-5" id="inputsCol">
-                  <div class="h-100 border rounded-4 p-3 p-md-4">
-                    <h5 class="mb-3">Tell Us Your Plan</h5>
-                    <form id="calcForm" novalidate>
-                      <div class="mb-3">
-                        <label class="form-label" for="initialCorpus"
-                          >Initial corpus (₹)
-                          <span
-                            class="help"
-                            role="button"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="The lump sum you already have invested."
-                            >?</span
-                          >
-                        </label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="initialCorpus"
-                          placeholder="e.g., 50000"
-                          value="50000"
-                          min="0"
-                        />
-                      </div>
-
-                      <div class="mb-3">
-                        <label class="form-label" for="monthlySIP"
-                          >Monthly SIP (₹)
-                          <span
-                            class="help"
-                            role="button"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="Your monthly investment added at the end of each month."
-                            >?</span
-                          >
-                        </label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="monthlySIP"
-                          placeholder="e.g., 10000"
-                          value="10000"
-                          min="0"
-                        />
-                      </div>
-
-                      <div class="mb-3">
-                        <label class="form-label" for="expectedReturn"
-                          >Expected annual return (%)
-                          <span
-                            class="help"
-                            role="button"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="Net annualised rate assumed for growth. This is just an estimate."
-                            >?</span
-                          >
-                        </label>
-                        <input
-                          type="range"
-                          class="form-range"
-                          id="expectedReturn"
-                          min="8"
-                          max="16"
-                          step="0.5"
-                          value="12"
-                        />
-                        <div>
-                          <span class="kpi-pill"
-                            ><span id="returnValue">12</span>% expected</span
-                          >
-                        </div>
-                      </div>
-
-                      <!-- ADVANCED INPUTS: hidden until user clicks Edit Step-Up & Top-Up -->
-                      <div class="mb-3 advanced-input d-none">
-                        <label class="form-label" for="stepUpAmt"
-                          >Yearly SIP Step-Up (₹)
-                          <span
-                            class="help"
-                            role="button"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="How much should your monthly SIP increase every 12 months?"
-                            >?</span
-                          >
-                        </label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="stepUpAmt"
-                          placeholder="e.g., 1000"
-                          min="0"
-                          value="0"
-                        />
-                      </div>
-
-                      <div class="mb-3 advanced-input d-none">
-                        <label class="form-label" for="topUpAmt">
-                          Annual Corpus Top-Up (₹)
-                          <span
-                            class="help"
-                            role="button"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="How much extra will you add to your corpus every 12 months (month 12, 24, ...)?"
-                            >?</span
-                          >
-                        </label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="topUpAmt"
-                          placeholder="e.g., 20000"
-                          min="0"
-                          value="0"
-                        />
-                      </div>
-
-                      <button
-                        type="button"
-                        id="calcBtn"
-                        class="btn btn-success w-100"
-                        style="
-                          background: var(--brand-green);
-                          border-color: var(--brand-green);
-                        "
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Calculate time to each milestone based on your inputs"
-                      >
-                        Calculate
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <!-- Results (hidden until first Calculate) -->
-                <div class="col-12 col-lg-7 d-none" id="resultsCol">
-                  <div
-                    class="h-100 border rounded-4 p-3 p-md-4 d-flex flex-column"
-                  >
-                    <h5 class="mb-3">Results</h5>
-                    <div id="highlightGoal" class="small text-muted mb-2">
-                      No goal selected yet.
-                    </div>
-                    <div id="resultLine" class="mb-3 fw-semibold"></div>
-
-                    <div
-                      class="chart-wrap flex-grow-1 d-flex align-items-center"
-                    >
-                      <canvas id="goalChart" height="180"></canvas>
-                    </div>
-                    <div class="mt-2 text-center small text-muted">
-                      X-axis: Milestone Goals • amount • Y-axis: Months needed
-                      (lower is faster)
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Glossary + Pro Tips Row -->
-              <div class="row g-4 mt-5">
-                <!-- Left: Glossary / Learning Hub -->
-                <div class="col-12 col-lg-8">
-                  <h5 class="mb-3">Glossary & Learning Hub</h5>
-                  <div class="accordion" id="glossaryAccordion">
-                    <!-- a. Basics of SIP -->
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="glossary1h">
-                        <button
-                          class="accordion-button"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#glossary1"
-                          aria-expanded="true"
-                          aria-controls="glossary1"
-                        >
-                          a) What are the basics of SIP?
-                        </button>
-                      </h2>
-                      <div
-                        id="glossary1"
-                        class="accordion-collapse collapse show"
-                        aria-labelledby="glossary1h"
-                        data-bs-parent="#glossaryAccordion"
-                      >
-                        <div class="accordion-body">
-                          <div class="ratio ratio-16x9">
-                            <iframe
-                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
-                              title="YouTube video player"
-                              frameborder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              referrerpolicy="strict-origin-when-cross-origin"
-                              allowfullscreen
-                              loading="lazy"
-                            ></iframe>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- b. Step-up SIP & Top-Ups -->
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="glossary2h">
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#glossary2"
-                          aria-expanded="false"
-                          aria-controls="glossary2"
-                        >
-                          b) What is stepping up your SIP and annual/bi-annual
-                          top up?
-                        </button>
-                      </h2>
-                      <div
-                        id="glossary2"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="glossary2h"
-                        data-bs-parent="#glossaryAccordion"
-                      >
-                        <div class="accordion-body">
-                          <div class="ratio ratio-16x9">
-                            <iframe
-                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
-                              title="YouTube video player"
-                              frameborder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              referrerpolicy="strict-origin-when-cross-origin"
-                              allowfullscreen
-                              loading="lazy"
-                            ></iframe>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- c. Power of compounding -->
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="glossary3h">
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#glossary3"
-                          aria-expanded="false"
-                          aria-controls="glossary3"
-                        >
-                          c) What is the power of compounding?
-                        </button>
-                      </h2>
-                      <div
-                        id="glossary3"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="glossary3h"
-                        data-bs-parent="#glossaryAccordion"
-                      >
-                        <div class="accordion-body">
-                          <div class="ratio ratio-16x9">
-                            <iframe
-                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
-                              title="YouTube video player"
-                              frameborder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              referrerpolicy="strict-origin-when-cross-origin"
-                              allowfullscreen
-                              loading="lazy"
-                            ></iframe>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- d. Goal mapping -->
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="glossary4h">
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#glossary4"
-                          aria-expanded="false"
-                          aria-controls="glossary4"
-                        >
-                          d) Why is Goal Mapping important?
-                        </button>
-                      </h2>
-                      <div
-                        id="glossary4"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="glossary4h"
-                        data-bs-parent="#glossaryAccordion"
-                      >
-                        <div class="accordion-body">
-                          <div class="ratio ratio-16x9">
-                            <iframe
-                              src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
-                              title="YouTube video player"
-                              frameborder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              referrerpolicy="strict-origin-when-cross-origin"
-                              allowfullscreen
-                              loading="lazy"
-                            ></iframe>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- e. Detailed calculation method (PDF) -->
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="glossary5h">
-                        <button
-                          class="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#glossary5"
-                          aria-expanded="false"
-                          aria-controls="glossary5"
-                        >
-                          e) What is our detailed calculation method?
-                        </button>
-                      </h2>
-                      <div
-                        id="glossary5"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="glossary5h"
-                        data-bs-parent="#glossaryAccordion"
-                      >
-                        <div class="accordion-body">
-                          <p class="mb-2">
-                            You can download the full Milestones2Wealth
-                            calculation guide here:
-                          </p>
-                          <a
-                            class="btn btn-outline-brand"
-                            href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf"
-                            target="_blank"
-                            rel="noopener"
-                          >
-                            Open Detailed Calculation Method (PDF)
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Right: Pro Tip static section -->
-                <div class="col-12 col-lg-4">
-                  <div class="protip-card h-100 p-3 p-md-4">
-                    <h5 class="mb-3">Pro Tips for Smarter Planning</h5>
-                    <ul class="small mb-0">
-                      <li>
-                        <strong>Plan with inflation –</strong> Future cost will
-                        be higher — add a buffer in pace with inflation.
-                      </li>
-                      <li>
-                        <strong>Match returns to timeframe –</strong>
-                        Short-term: 6–7%. Long-term: 10–12%.
-                      </li>
-                      <li>
-                        <strong>Start early, even small –</strong> Time beats
-                        amount in compounding.
-                      </li>
-                      <li>
-                        <strong>Automate SIP –</strong> Follow “Income – Savings
-                        = Expenses.”
-                      </li>
-                      <li>
-                        <strong>Use Step-Up SIP –</strong> A 5–10% yearly
-                        increase cuts years off your goal.
-                      </li>
-                      <li>
-                        <strong>Add small top-ups –</strong> Even ₹5k–₹25k
-                        yearly speeds up your milestone.
-                      </li>
-                      <li>
-                        <strong>Stay consistent –</strong> Missing SIPs delays
-                        your goal more than you think.
-                      </li>
-                      <li>
-                        <strong>Review yearly –</strong> Adjust SIP or returns
-                        based on income and goals.
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="text-center mt-5">
-                <a
-                  href="https://itght-my.sharepoint.com/personal/nirupama_ithought_co_in/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY%2FM2W%20Calculator%20%2D%20FAQ%2Epdf&parent=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY&ga=1"
-                  target="_blank"
-                  class="btn btn-outline-brand px-4 py-2"
-                >
-                  📘 Frequently Asked Questions
+    <main class="w-100">
+      <div class="app-card p-4 p-md-5">
+        <div class="content-container">
+          <div class="text-center mb-5">
+            <!-- Header -->
+            <div class="header-top mb-4">
+              <div class="header-top-logo">
+                <a href="https://milestones2wealth.com" target="_self">
+                  <img
+                    src="https://milestones2wealth.com/wp-content/uploads/2025/10/cropped-Artboard-1-copy-4-scaled-1-192x192.png"
+                    alt="Milestones2Wealth Logo"
+                  />
                 </a>
               </div>
-              
+
+              <h1 class="calc-header mb-0 text-center text-md-end">
+                INVESTMENT<br />GOAL CALCULATOR
+              </h1>
             </div>
-            <div class="zf-wrapper">
-                <div
-                  id="zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
+
+            <!-- Badge & Subtitle -->
+            <div class="text-center">
+              <span class="brand-badge">
+                Goal Oriented • Simple • Personalized
+              </span>
+              <p class="lead-subtitle mb-0">
+                Track the fastest route to your next milestone.
+              </p>
+            </div>
+          </div>
+
+          <!-- Goal Selection Grid -->
+          <div class="text-center mb-5">
+            <div class="subtitle fw-bold">
+              Select your financial wealth goal below.
+            </div>
+            <div class="goal-grid">
+              <button
+                class="goal-btn"
+                data-goal="200000"
+                data-name="Self-Starter"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-2-1.png"
+                />
+                <div>
+                  <div class="fw-bold">Self-Starter</div>
+                  <div class="small opacity-75">₹2 Lakhs</div>
+                </div>
+              </button>
+
+              <button
+                class="goal-btn"
+                data-goal="200000"
+                data-name="Go-Getter"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/2L.png"
+                />
+                <div>
+                  <div class="fw-bold">Go-Getter</div>
+                  <div class="small opacity-75">₹2 Lakhs</div>
+                </div>
+              </button>
+
+              <button
+                class="goal-btn"
+                data-goal="500000"
+                data-name="Achiever"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-3.png"
+                />
+                <div>
+                  <div class="fw-bold">Achiever</div>
+                  <div class="small opacity-75">₹5 Lakhs</div>
+                </div>
+              </button>
+
+              <button
+                class="goal-btn"
+                data-goal="1000000"
+                data-name="Warrior"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-4.png"
+                />
+                <div>
+                  <div class="fw-bold">Warrior</div>
+                  <div class="small opacity-75">₹10 Lakhs</div>
+                </div>
+              </button>
+
+              <button
+                class="goal-btn"
+                data-goal="2500000"
+                data-name="Sharpshooter"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/25L.png"
+                />
+                <div>
+                  <div class="fw-bold">Sharpshooter</div>
+                  <div class="small opacity-75">₹25 Lakhs</div>
+                </div>
+              </button>
+
+              <button
+                class="goal-btn"
+                data-goal="5000000"
+                data-name="Maestro"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-6.png"
+                />
+                <div>
+                  <div class="fw-bold">Maestro</div>
+                  <div class="small opacity-75">₹50 Lakhs</div>
+                </div>
+              </button>
+
+              <button
+                class="goal-btn"
+                data-goal="10000000"
+                data-name="Ambassador"
+              >
+                <img
+                  src="https://milestones2wealth.com/wp-content/uploads/2025/07/Asset-7.png"
+                />
+                <div>
+                  <div class="fw-bold">Ambassador</div>
+                  <div class="small opacity-75">₹1 Crore</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Calculator Section -->
+          <div id="calcSection" class="row g-5 align-items-stretch d-none fade-in">
+            <!-- Pro Tip Banner -->
+            <div id="proTipBanner" class="col-12 d-none">
+              <div
+                class="alert alert-warning border-0 shadow-sm d-flex flex-wrap justify-content-between align-items-center mb-0 rounded-4 p-4"
+                style="background-color: #fffbf0; color: #b45309"
+              >
+                <div class="mb-2 mb-md-0 fs-5">
+                  <span class="badge bg-warning text-dark me-2">Pro Tip</span>
+                  You can reach your goal faster by increasing your
+                  <b>SIP Step-Up</b> and <b>Annual Corpus Top-Up</b>.
+                </div>
+                <button
+                  type="button"
+                  id="nudgeFocus"
+                  class="btn btn-outline-brand ms-md-3 border-warning text-warning-emphasis"
                 >
-                <script type="text/javascript">
-                  (function () {
-                    try {
-                      var f = document.createElement("iframe");
+                  Edit Step-Up & Top-Up
+                </button>
+              </div>
+            </div>
 
-                      var ifrmSrc =
-                        "https://forms.zohopublic.in/ithought/form/SignUp/formperma/sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA?zf_rszfm=1";
+            <!-- Inputs -->
+            <div class="col-12 col-lg-5" id="inputsCol">
+              <div class="h-100 p-3 p-md-4">
+                <h3 class="mb-4 fw-bold text-secondary">Your Plan</h3>
+                <form id="calcForm" novalidate>
+                  <div class="mb-4">
+                    <label class="form-label" for="initialCorpus">
+                      Initial corpus (₹)
+                      <span
+                        class="help"
+                        role="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="The lump sum you already have invested."
+                        >?</span
+                      >
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="initialCorpus"
+                      placeholder="e.g., 50000"
+                      value="50000"
+                      min="0"
+                    />
+                  </div>
 
-                      try {
-                        if (
-                          typeof ZFAdvLead != "undefined" &&
-                          typeof zfutm_zfAdvLead != "undefined"
-                        ) {
-                          for (
-                            var prmIdx = 0;
-                            prmIdx < ZFAdvLead.utmPNameArr.length;
-                            prmIdx++
-                          ) {
-                            var utmPm = ZFAdvLead.utmPNameArr[prmIdx];
-                            utmPm =
-                              ZFAdvLead.isSameDomian &&
-                              ZFAdvLead.utmcustPNameArr.indexOf(utmPm) == -1
-                                ? "zf_" + utmPm
-                                : utmPm;
-                            var utmVal = zfutm_zfAdvLead.zfautm_gC_enc(
-                              ZFAdvLead.utmPNameArr[prmIdx]
-                            );
-                            if (typeof utmVal !== "undefined") {
-                              if (utmVal != "") {
-                                if (ifrmSrc.indexOf("?") > 0) {
-                                  ifrmSrc =
-                                    ifrmSrc + "&" + utmPm + "=" + utmVal;
-                                } else {
-                                  ifrmSrc =
-                                    ifrmSrc + "?" + utmPm + "=" + utmVal;
-                                }
-                              }
-                            }
-                          }
-                        }
-                        if (
-                          typeof ZFLead !== "undefined" &&
-                          typeof zfutm_zfLead !== "undefined"
-                        ) {
-                          for (
-                            var prmIdx = 0;
-                            prmIdx < ZFLead.utmPNameArr.length;
-                            prmIdx++
-                          ) {
-                            var utmPm = ZFLead.utmPNameArr[prmIdx];
-                            var utmVal = zfutm_zfLead.zfutm_gC_enc(
-                              ZFLead.utmPNameArr[prmIdx]
-                            );
-                            if (typeof utmVal !== "undefined") {
-                              if (utmVal != "") {
-                                if (ifrmSrc.indexOf("?") > 0) {
-                                  ifrmSrc =
-                                    ifrmSrc + "&" + utmPm + "=" + utmVal; //No I18N
-                                } else {
-                                  ifrmSrc =
-                                    ifrmSrc + "?" + utmPm + "=" + utmVal; //No I18N
-                                }
-                              }
-                            }
-                          }
-                        }
-                      } catch (e) {}
+                  <div class="mb-4">
+                    <label class="form-label" for="monthlySIP">
+                      Monthly SIP (₹)
+                      <span
+                        class="help"
+                        role="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Your monthly investment added at the end of each month."
+                        >?</span
+                      >
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="monthlySIP"
+                      placeholder="e.g., 10000"
+                      value="10000"
+                      min="0"
+                    />
+                  </div>
 
-                      f.src = ifrmSrc;
-                      f.style.border = "none";
-                      f.style.height = "544px";
-                      f.style.width = "100%";
-                      f.style.transition = "all 0.5s ease";
-                      f.setAttribute("aria-label", "Book A Free Call");
+                  <div class="mb-4">
+                    <label class="form-label" for="expectedReturn">
+                      Expected annual return (%)
+                      <span
+                        class="help"
+                        role="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Net annualised rate assumed for growth. This is just an estimate."
+                        >?</span
+                      >
+                    </label>
+                    <input
+                      type="range"
+                      class="form-range"
+                      id="expectedReturn"
+                      min="8"
+                      max="16"
+                      step="0.5"
+                      value="12"
+                    />
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <small class="text-muted fs-6">Conservative (8%)</small>
+                      <span class="kpi-pill">
+                        <span id="returnValue">12</span>%
+                      </span>
+                      <small class="text-muted fs-6">Aggressive (16%)</small>
+                    </div>
+                  </div>
 
-                      var d = document.getElementById(
-                        "zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
-                      );
-                      d.appendChild(f);
-                      window.addEventListener(
-                        "message",
-                        function () {
-                          var evntData = event.data;
-                          if (evntData && evntData.constructor == String) {
-                            var zf_ifrm_data = evntData.split("|");
-                            if (
-                              zf_ifrm_data.length == 2 ||
-                              zf_ifrm_data.length == 3
-                            ) {
-                              var zf_perma = zf_ifrm_data[0];
-                              var zf_ifrm_ht_nw =
-                                parseInt(zf_ifrm_data[1], 10) + 15 + "px";
-                              var iframe = document
-                                .getElementById(
-                                  "zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
-                                )
-                                .getElementsByTagName("iframe")[0];
-                              if (
-                                iframe.src.indexOf("formperma") > 0 &&
-                                iframe.src.indexOf(zf_perma) > 0
-                              ) {
-                                var prevIframeHeight = iframe.style.height;
-                                var zf_tout = false;
-                                if (zf_ifrm_data.length == 3) {
-                                  iframe.scrollIntoView();
-                                  zf_tout = true;
-                                }
+                  <!-- Advanced Inputs -->
+                  <div class="mb-4 advanced-input d-none fade-in">
+                    <label class="form-label" for="stepUpAmt">
+                      Yearly SIP Step-Up (₹)
+                      <span
+                        class="help"
+                        role="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="How much should your monthly SIP increase every 12 months?"
+                        >?</span
+                      >
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="stepUpAmt"
+                      placeholder="e.g., 1000"
+                      min="0"
+                      value="0"
+                    />
+                  </div>
 
-                                if (prevIframeHeight != zf_ifrm_ht_nw) {
-                                  if (zf_tout) {
-                                    setTimeout(function () {
-                                      iframe.style.height = zf_ifrm_ht_nw;
-                                    }, 500);
-                                  } else {
-                                    iframe.style.height = zf_ifrm_ht_nw;
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        },
-                        false
-                      );
-                    } catch (e) {}
-                  })();
-                </script>
+                  <div class="mb-4 advanced-input d-none fade-in">
+                    <label class="form-label" for="topUpAmt">
+                      Annual Corpus Top-Up (₹)
+                      <span
+                        class="help"
+                        role="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="How much extra will you add to your corpus every 12 months (month 12, 24, ...)?"
+                        >?</span
+                      >
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="topUpAmt"
+                      placeholder="e.g., 20000"
+                      min="0"
+                      value="0"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    id="calcBtn"
+                    class="btn btn-success w-100 text-white shadow"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Calculate time to each milestone based on your inputs"
+                  >
+                    Calculate Timeline
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-12 col-lg-7 d-none fade-in" id="resultsCol">
+              <div class="h-100 rounded-4 p-3 p-md-4 d-flex flex-column">
+                <h3 class="mb-3 fw-bold text-secondary">Projected Timeline</h3>
+                <div id="highlightGoal" class="text-muted mb-2 fs-5">
+                  No goal selected yet.
+                </div>
+                <div id="resultLine" class="mb-3 fw-semibold"></div>
+
+                <div class="chart-wrap flex-grow-1 d-flex align-items-center">
+                  <canvas id="goalChart" height="180"></canvas>
+                </div>
+                <div class="mt-3 text-center text-muted fst-italic">
+                  Lower on the chart = Faster achievement
                 </div>
               </div>
+            </div>
           </div>
-        </main>
 
+          <!-- Glossary + Pro Tips Row -->
+          <div class="row g-5 mt-5">
+            <!-- Left: Glossary / Learning Hub -->
+            <div class="col-12 col-lg-8">
+              <h3 class="mb-4 fw-bold">Glossary & Learning Hub</h3>
+              <div class="accordion accordion-flush" id="glossaryAccordion">
+                <!-- a. Basics of SIP -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="glossary1h">
+                    <button
+                      class="accordion-button"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#glossary1"
+                      aria-expanded="true"
+                      aria-controls="glossary1"
+                    >
+                      a) What are the basics of SIP?
+                    </button>
+                  </h2>
+                  <div
+                    id="glossary1"
+                    class="accordion-collapse collapse show"
+                    aria-labelledby="glossary1h"
+                    data-bs-parent="#glossaryAccordion"
+                  >
+                    <div class="accordion-body">
+                      <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                        <iframe
+                          src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                          title="YouTube video player"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                          loading="lazy"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- b. Step-up SIP & Top-Ups -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="glossary2h">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#glossary2"
+                      aria-expanded="false"
+                      aria-controls="glossary2"
+                    >
+                      b) What is stepping up your SIP and annual/bi-annual top
+                      up?
+                    </button>
+                  </h2>
+                  <div
+                    id="glossary2"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="glossary2h"
+                    data-bs-parent="#glossaryAccordion"
+                  >
+                    <div class="accordion-body">
+                      <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                        <iframe
+                          src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                          title="YouTube video player"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                          loading="lazy"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- c. Power of compounding -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="glossary3h">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#glossary3"
+                      aria-expanded="false"
+                      aria-controls="glossary3"
+                    >
+                      c) What is the power of compounding?
+                    </button>
+                  </h2>
+                  <div
+                    id="glossary3"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="glossary3h"
+                    data-bs-parent="#glossaryAccordion"
+                  >
+                    <div class="accordion-body">
+                      <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                        <iframe
+                          src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                          title="YouTube video player"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                          loading="lazy"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- d. Goal mapping -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="glossary4h">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#glossary4"
+                      aria-expanded="false"
+                      aria-controls="glossary4"
+                    >
+                      d) Why is Goal Mapping important?
+                    </button>
+                  </h2>
+                  <div
+                    id="glossary4"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="glossary4h"
+                    data-bs-parent="#glossaryAccordion"
+                  >
+                    <div class="accordion-body">
+                      <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                        <iframe
+                          src="https://www.youtube.com/embed/5h0PagpUsIs?si=HJyxVKj3A0CcYcxh"
+                          title="YouTube video player"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                          loading="lazy"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- e. Detailed calculation method (PDF) -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="glossary5h">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#glossary5"
+                      aria-expanded="false"
+                      aria-controls="glossary5"
+                    >
+                      e) What is our detailed calculation method?
+                    </button>
+                  </h2>
+                  <div
+                    id="glossary5"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="glossary5h"
+                    data-bs-parent="#glossaryAccordion"
+                  >
+                    <div class="accordion-body">
+                      <p class="mb-3 text-muted">
+                        You can download the full Milestones2Wealth calculation
+                        guide here:
+                      </p>
+                      <a
+                        class="btn btn-outline-brand"
+                        href="https://milestones2wealth.com/wp-content/uploads/2025/08/Milestones2Wealth_User_Guide.pdf"
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        <i class="bi bi-file-earmark-pdf"></i> Open Detailed Calculation
+                        Method (PDF)
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Pro Tip static section -->
+            <div class="col-12 col-lg-4">
+              <div class="protip-card h-100 p-4">
+                <h5 class="mb-4 d-flex align-items-center">
+                  <span>💡</span>
+                  <span class="ms-2">Smarter Planning</span>
+                </h5>
+                <ul class="small mb-0 list-unstyled">
+                  <li>
+                    <strong>Plan with inflation –</strong> Future cost will be
+                    higher — add a buffer in pace with inflation.
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Match returns to timeframe –</strong>
+                    Short-term: 6–7%. Long-term: 10–12%.
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Start early, even small –</strong> Time beats amount
+                    in compounding.
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Automate SIP –</strong> Follow “Income – Savings =
+                    Expenses.”
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Use Step-Up SIP –</strong> A 5–10% yearly increase
+                    cuts years off your goal.
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Add small top-ups –</strong> Even ₹5k–₹25k yearly
+                    speeds up your milestone.
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Stay consistent –</strong> Missing SIPs delays your
+                    goal more than you think.
+                  </li>
+                  <li class="my-3 border-bottom border-secondary opacity-10"></li>
+                  <li>
+                    <strong>Review yearly –</strong> Adjust SIP or returns based
+                    on income and goals.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-5">
+            <a
+              href="https://itght-my.sharepoint.com/personal/nirupama_ithought_co_in/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY%2FM2W%20Calculator%20%2D%20FAQ%2Epdf&parent=%2Fpersonal%2Fnirupama%5Fithought%5Fco%5Fin%2FDocuments%2FDesktop%2FITHOUGHT%2FM2W%20SIP%20CALC%20WEB%20DISPLAY&ga=1"
+              target="_blank"
+              class="btn btn-outline-brand px-5 py-3 shadow-sm"
+            >
+              📘 Frequently Asked Questions
+            </a>
+          </div>
+        </div>
+
+        <!-- ZOHO FORM CONTAINER (Inside app-card, full width) -->
+        <div class="zf-wrapper">
+          <div id="zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA" style="width: 100%;">
+            <script type="text/javascript">
+              (function () {
+                try {
+                  var f = document.createElement("iframe");
+
+                  var ifrmSrc =
+                    "https://forms.zohopublic.in/ithought/form/SignUp/formperma/sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA?zf_rszfm=1";
+
+                  try {
+                    if (
+                      typeof ZFAdvLead != "undefined" &&
+                      typeof zfutm_zfAdvLead != "undefined"
+                    ) {
+                      for (
+                        var prmIdx = 0;
+                        prmIdx < ZFAdvLead.utmPNameArr.length;
+                        prmIdx++
+                      ) {
+                        var utmPm = ZFAdvLead.utmPNameArr[prmIdx];
+                        utmPm =
+                          ZFAdvLead.isSameDomian &&
+                          ZFAdvLead.utmcustPNameArr.indexOf(utmPm) == -1
+                            ? "zf_" + utmPm
+                            : utmPm;
+                        var utmVal = zfutm_zfAdvLead.zfautm_gC_enc(
+                          ZFAdvLead.utmPNameArr[prmIdx]
+                        );
+                        if (typeof utmVal !== "undefined") {
+                          if (utmVal != "") {
+                            if (ifrmSrc.indexOf("?") > 0) {
+                              ifrmSrc = ifrmSrc + "&" + utmPm + "=" + utmVal;
+                            } else {
+                              ifrmSrc = ifrmSrc + "?" + utmPm + "=" + utmVal;
+                            }
+                          }
+                        }
+                      }
+                    }
+                    if (
+                      typeof ZFLead !== "undefined" &&
+                      typeof zfutm_zfLead !== "undefined"
+                    ) {
+                      for (
+                        var prmIdx = 0;
+                        prmIdx < ZFLead.utmPNameArr.length;
+                        prmIdx++
+                      ) {
+                        var utmPm = ZFLead.utmPNameArr[prmIdx];
+                        var utmVal = zfutm_zfLead.zfutm_gC_enc(
+                          ZFLead.utmPNameArr[prmIdx]
+                        );
+                        if (typeof utmVal !== "undefined") {
+                          if (utmVal != "") {
+                            if (ifrmSrc.indexOf("?") > 0) {
+                              ifrmSrc = ifrmSrc + "&" + utmPm + "=" + utmVal; //No I18N
+                            } else {
+                              ifrmSrc = ifrmSrc + "?" + utmPm + "=" + utmVal; //No I18N
+                            }
+                          }
+                        }
+                      }
+                    }
+                  } catch (e) {}
+
+                  f.src = ifrmSrc;
+                  f.style.border = "none";
+                  f.style.height = "544px";
+                  f.style.width = "100%";
+                  f.style.transition = "all 0.5s ease";
+                  f.setAttribute("aria-label", "Book A Free Call");
+
+                  var d = document.getElementById(
+                    "zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
+                  );
+                  d.appendChild(f);
+                  window.addEventListener(
+                    "message",
+                    function () {
+                      var evntData = event.data;
+                      if (evntData && evntData.constructor == String) {
+                        var zf_ifrm_data = evntData.split("|");
+                        if (
+                          zf_ifrm_data.length == 2 ||
+                          zf_ifrm_data.length == 3
+                        ) {
+                          var zf_perma = zf_ifrm_data[0];
+                          var zf_ifrm_ht_nw =
+                            parseInt(zf_ifrm_data[1], 10) + 15 + "px";
+                          var iframe = document
+                            .getElementById(
+                              "zf_div_sLM441zK4CB6fLES6zobQ3mL07JA7D6BAwC2dKzF4sA"
+                            )
+                            .getElementsByTagName("iframe")[0];
+                          if (
+                            iframe.src.indexOf("formperma") > 0 &&
+                            iframe.src.indexOf(zf_perma) > 0
+                          ) {
+                            var prevIframeHeight = iframe.style.height;
+                            var zf_tout = false;
+                            if (zf_ifrm_data.length == 3) {
+                              iframe.scrollIntoView();
+                              zf_tout = true;
+                            }
+
+                            if (prevIframeHeight != zf_ifrm_ht_nw) {
+                              if (zf_tout) {
+                                setTimeout(function () {
+                                  iframe.style.height = zf_ifrm_ht_nw;
+                                }, 500);
+                              } else {
+                                iframe.style.height = zf_ifrm_ht_nw;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    false
+                  );
+                } catch (e) {}
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+    </main>
 
     <!-- Load Bootstrap JS BEFORE any script that uses `bootstrap.*` -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -1021,7 +1231,7 @@
           }
 
           // Always compute with current/default inputs, but WITHOUT Pro Tip
-          computeAndDraw(false);
+          computeAndDraw(true);
 
           // if we already have results from a previous calculation, update summary
           if (lastResults) {
@@ -1149,9 +1359,9 @@
                 tension: 0.3,
                 borderColor:
                   getComputedStyle(document.documentElement)
-                    .getPropertyValue("--brand-green")
-                    .trim() || "#1faa59",
-                backgroundColor: "rgba(31,170,89,.15)",
+                    .getPropertyValue("--brand-teal")
+                    .trim() || "#37c0a2",
+                backgroundColor: "rgba(55, 192, 162, 0.15)",
                 pointRadius: 5,
                 pointHoverRadius: 8,
                 spanGaps: true,
@@ -1191,7 +1401,7 @@
               title: {
                 display: true,
                 text: "Time to Reach Each Milestone",
-                color: "#143",
+                color: "#1f2937",
                 padding: { top: 6, bottom: 6 },
               },
             },
@@ -1200,14 +1410,14 @@
                 title: {
                   display: true,
                   text: "Milestone Goals (₹ Amount)",
-                  color: "#143",
+                  color: "#4b5563",
                 },
               },
               y: {
                 title: {
                   display: true,
                   text: "Months Needed (lower is faster)",
-                  color: "#143",
+                  color: "#4b5563",
                 },
                 beginAtZero: true,
                 ticks: { stepSize: 6 },
@@ -1222,7 +1432,7 @@
         const t = (name, cond) =>
           console[cond ? "log" : "error"](
             `%cTEST ${cond ? "PASS" : "FAIL"}: ${name}`,
-            `font-weight:bold;color:${cond ? "#1faa59" : "#b00020"}`
+            `font-weight:bold;color:${cond ? "#37c0a2" : "#b00020"}`
           );
         // Libs present
         t("Bootstrap available", typeof bootstrap !== "undefined");
