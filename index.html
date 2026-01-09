@@ -57,7 +57,33 @@
         margin: 0;
         font-size: 18px; /* Increased base font size */
       }
+      .home-btn {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 2000;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
 
+.home-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: var(--brand-terra);
+}
+
+.home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
       .app-card {
         width: 100%;
         min-height: 100vh;
@@ -469,6 +495,12 @@
     </style>
   </head>
   <body>
+    <a class="home-btn" href="https://milestones2wealth.com" aria-label="Back to Milestones2Wealth Home">
+  <!-- Inline SVG (no extra libraries needed) -->
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3.1 3 10v10a1 1 0 0 0 1 1h6v-7h4v7h6a1 1 0 0 0 1-1V10l-9-6.9ZM19 19h-3v-7H8v7H5v-8l7-5.3L19 11v8Z"/>
+  </svg>
+</a>
     <main class="w-100">
       <div class="app-card p-4 p-md-5">
         <div class="content-container">
@@ -677,15 +709,13 @@
                       step="0.5"
                       value="10"
                     />
-                    <div
-                      class="d-flex justify-content-between align-items-center mt-2"
-                    >
-                      <small class="text-muted fs-6">Conservative (8%)</small>
-                      <span class="kpi-pill">
-                        <span id="returnValue">12</span>%
-                      </span>
-                      <small class="text-muted fs-6">Aggressive (16%)</small>
-                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+  <small class="text-muted fs-6">8%</small>
+  <span class="kpi-pill">
+    <span id="returnValue">10</span>%
+  </span>
+  <small class="text-muted fs-6">12%</small>
+</div>
                   </div>
 
                   <!-- Advanced Inputs -->
