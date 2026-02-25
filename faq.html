@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M2W FAQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
+
+  <!-- Header Section -->
+  <div class="max-w-3xl mx-auto text-center mb-12">
+    <h2 class="text-sm font-semibold text-blue-600 tracking-wide uppercase mb-2">
+      Knowledge Base
+    </h2>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">
+      Frequently Asked Questions
+    </h1>
+    <p class="text-lg text-slate-600 mb-8">
+      Everything you need to know about reaching your first ₹1 Crore with Milestones2Wealth.
+    </p>
+
+    <!-- Feature Badges -->
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <div class="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+        <!-- Target Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <span class="text-sm font-medium text-slate-700">Milestone Driven</span>
+      </div>
+      <div class="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+        <!-- TrendingUp Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <span class="text-sm font-medium text-slate-700">Wealth Creation</span>
+      </div>
+      <div class="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+        <!-- ShieldCheck Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2-1 4-2 7-2 2.5 0 4.5 1 6.5 2a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span class="text-sm font-medium text-slate-700">Expert Guided</span>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="relative max-w-xl mx-auto">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <!-- Search Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
+      <input
+        type="text"
+        id="search-input"
+        class="block w-full pl-11 pr-4 py-4 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm text-base"
+        placeholder="Search for answers..."
+      />
+    </div>
+  </div>
+
+  <!-- FAQ Accordion List -->
+  <div id="faq-wrapper" class="max-w-3xl mx-auto space-y-4">
+    <!-- FAQs injected by JavaScript -->
+  </div>
+
+  <script>
+    const faqData = [
+      { id: 1, question: "What is Milestones2Wealth?", answer: "Milestones2Wealth is a mutual fund investing program that helps individuals build long-term wealth. The goal is simple: guide investors to steadily grow their portfolio to ₹1 crore and beyond, using disciplined investing and the right investment choices." },
+      { id: 2, question: "Who is Milestones2Wealth designed for?", answer: "It’s designed for investors who want structured guidance to build wealth over the long term." },
+      { id: 3, question: "What makes Milestones2Wealth different from regular mutual fund investing?", answer: "You get continuous guidance, curated fund recommendations, and a clear long-term roadmap. The focus is on hitting milestones, staying disciplined, and building a meaningful corpus, not just picking funds." },
+      { id: 4, question: "Do I need a minimum amount to start?", answer: "No. You can start with any amount through SIPs or lumpsum investments. The idea is consistency, not size. But, remember – to create wealth, you need to invest to your full potential." },
+      { id: 5, question: "How will Milestones2Wealth help me reach ₹1 crore?", answer: "We use a step-by-step milestone-based approach:", list: ["Build the right portfolio structure", "Review regularly", "Increase SIPs at the right time", "Capture opportunities and avoid common mistakes"], footer: "This keeps you on track for long-term compounding." },
+      { id: 6, question: "Is Milestones2Wealth only for SIPs?", answer: "No. You can invest through SIPs, lumpsums, or a mix of both. SIPs form the foundation, but we also guide you on when lumpsums can accelerate progress." },
+      { id: 7, question: "How often will my portfolio be reviewed?", answer: "Your portfolio will be monitored regularly, and you will receive guidance during key market phases or whenever course correction is needed." },
+      { id: 8, question: "What types of mutual funds do you recommend in this program?", answer: "The portfolio typically uses equity, hybrid, debt precious metals funds depending on your time horizon, risk profile, the milestone you are targeting and also, the prevailing investment environment." },
+      { id: 9, question: "Can I change my SIP amount later?", answer: "Yes. You can increase, decrease, or pause SIPs. We encourage periodic SIP increases to accelerate wealth creation." },
+      { id: 10, question: "Is there any fee for joining Milestones2Wealth?", answer: "There is no separate fee. Investments are made in the regular plan of mutual funds, and we earn through commissions from the fund houses." },
+      { id: 11, question: "What if markets fall?", answer: "Market corrections are normal. We guide you through volatility and help you use such phases wisely; often as opportunities to build wealth faster." },
+      { id: 12, question: "Can I withdraw money when needed?", answer: "Yes. Mutual funds offer liquidity, and you can redeem whenever required. However, we help ensure withdrawals don’t derail long-term goals." },
+      { id: 13, question: "How do I track my investments?", answer: "You can track your portfolio via the Milestones2Wealth mobile application. You will also receive periodic statements, updates and insights from us." },
+      { id: 14, question: "Can beginners join Milestones2Wealth?", answer: "Absolutely! It’s also designed for new investors who want professional guidance and a simple, structured path to long-term wealth." },
+      { id: 15, question: "Will I get personalised guidance?", answer: "Yes. While the goal is standard, the plan is customised to your income, risk profile, and investment behaviour." },
+      { id: 16, question: "How will I interact with Milestones2Wealth during my journey?", answer: "You will be supported by a dedicated Relationship Manager who will guide you through every stage of your investment journey and help you stay on track with your milestones. You will also receive regular updates, insights, and alerts through our WhatsApp to keep you informed and engaged." },
+      { id: 17, question: "How is M2W different from other platforms?", answer: "Most platforms only show you data and funds. M2W gives you a clear, milestone-based roadmap so you know exactly what to invest, when to adjust, and how to stay on track. You get simple guidance, personalised support, and a step-by-step system to reach your goals with confidence." },
+      { id: 18, question: "How many milestones do I need to cross to reach ₹1 Crore?", answer: "This depends on how much you invest and for how long, but at M2W we have designed 6 Milestones to take you step-by-step from your first investment to your first ₹1 Crore. M2W is designed so you always know exactly where you stand and how far you are from ₹1 Crore." },
+      { id: 19, question: "How many milestones are there in M2W?", answer: "We have 6 Milestones in the M2W system. Each milestone represents a clear stage in your financial journey:", list: ["Self-Starter - 0-₹2 Lakhs", "Go-Getter - Reaching ₹2 Lakhs", "Achiever - Reaching ₹5 Lakhs", "Warrior - Reaching ₹10 Lakhs", "Sharpshooter - Reaching ₹25 Lakhs", "Maestro - Reaching ₹50 Lakhs", "Ambassador - Reaching ₹1 Crore"], footer: "Every milestone has simple tasks, targets, and guidance — so your wealth journey becomes structured, predictable, and motivating." },
+      { id: 20, question: "How do I get started?", answer: "Ready to hit your first crore? Your journey starts here.", isCTA: true }
+    ];
+
+    const faqWrapper = document.getElementById('faq-wrapper');
+    const searchInput = document.getElementById('search-input');
+
+    function renderFaqs() {
+      const query = searchInput.value.toLowerCase();
+      const filtered = faqData.filter(faq => 
+        faq.question.toLowerCase().includes(query) || 
+        faq.answer.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        faqWrapper.innerHTML = `
+          <div class="text-center py-12 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-slate-500 text-lg">No matching questions found.</p>
+            <button id="clear-search" class="mt-4 text-blue-600 hover:text-blue-700 font-medium">Clear search</button>
+          </div>
+        `;
+        document.getElementById('clear-search').addEventListener('click', () => {
+          searchInput.value = '';
+          renderFaqs();
+        });
+        return;
+      }
+
+      faqWrapper.innerHTML = filtered.map(faq => {
+        let listHTML = '';
+        if (faq.list) {
+          listHTML = `<ul class="mt-3 space-y-2 mb-3">` + faq.list.map(item => `
+            <li class="flex items-start">
+              <span class="flex-shrink-0 h-1.5 w-1.5 rounded-full bg-blue-500 mt-2 mr-2"></span>
+              <span>${item}</span>
+            </li>
+          `).join('') + `</ul>`;
+        }
+
+        const footerHTML = faq.footer ? `<p class="mt-2 font-medium text-slate-700">${faq.footer}</p>` : '';
+        const ctaHTML = faq.isCTA ? `
+          <div class="mt-6">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto">
+              Click Now to Start
+            </button>
+          </div>
+        ` : '';
+
+        return `
+          <div class="faq-item bg-white rounded-xl border border-slate-200 shadow-sm hover:border-slate-300 hover:shadow transition-all duration-200 overflow-hidden" data-id="${faq.id}">
+            <button class="faq-btn w-full flex items-center justify-between px-6 py-5 focus:outline-none">
+              <span class="faq-title text-left text-lg font-medium text-slate-800 transition-colors">${faq.question}</span>
+              <div class="faq-icon ml-4 flex-shrink-0 text-slate-400 transition-transform duration-300">
+                <!-- ChevronDown Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </button>
+            <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out px-6">
+              <div class="text-slate-600 leading-relaxed border-t border-slate-100 pt-4 pb-6">
+                <p>${faq.answer}</p>
+                ${listHTML}
+                ${footerHTML}
+                ${ctaHTML}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add event listeners to newly rendered items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        const btn = item.querySelector('.faq-btn');
+        btn.addEventListener('click', () => toggleAccordion(item));
+      });
+
+      // Default to opening the first item if no search query is active
+      if (!query && filtered.length > 0) {
+        const firstItem = document.querySelector(`.faq-item[data-id="1"]`);
+        if (firstItem) toggleAccordion(firstItem, true);
+      }
+    }
+
+    function toggleAccordion(item, forceOpen = false) {
+      const content = item.querySelector('.faq-content');
+      const icon = item.querySelector('.faq-icon');
+      const title = item.querySelector('.faq-title');
+      const isOpen = item.classList.contains('is-open');
+
+      if (isOpen && !forceOpen) {
+        // Close it
+        item.classList.remove('is-open', 'border-blue-200', 'shadow-md', 'ring-1', 'ring-blue-50');
+        item.classList.add('border-slate-200');
+        
+        content.classList.remove('max-h-[1000px]', 'opacity-100');
+        content.classList.add('max-h-0', 'opacity-0');
+        
+        icon.classList.remove('rotate-180', 'text-blue-600');
+        icon.classList.add('text-slate-400');
+        
+        title.classList.remove('text-blue-700');
+        title.classList.add('text-slate-800');
+      } else if (!isOpen) {
+        // Open it
+        item.classList.add('is-open', 'border-blue-200', 'shadow-md', 'ring-1', 'ring-blue-50');
+        item.classList.remove('border-slate-200');
+        
+        content.classList.remove('max-h-0', 'opacity-0');
+        content.classList.add('max-h-[1000px]', 'opacity-100');
+        
+        icon.classList.remove('text-slate-400');
+        icon.classList.add('rotate-180', 'text-blue-600');
+        
+        title.classList.remove('text-slate-800');
+        title.classList.add('text-blue-700');
+      }
+    }
+
+    // Bind Search Input
+    searchInput.addEventListener('input', renderFaqs);
+
+    // Initial render on page load
+    renderFaqs();
+  </script>
+</body>
+</html>
